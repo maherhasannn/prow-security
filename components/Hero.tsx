@@ -41,7 +41,7 @@ export default function Hero() {
             className="mb-6"
           >
             <span className="inline-block px-4 py-1.5 bg-background-alt text-xs font-heading font-semibold tracking-wider uppercase text-text/70 rounded-sm">
-              Secure Enterprise AI
+              HIPAA-Compliant Healthcare AI
             </span>
           </motion.div>
 
@@ -49,16 +49,16 @@ export default function Hero() {
             variants={itemVariants}
             className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-8 text-balance leading-[1.1] tracking-tight"
           >
-            Radical Clarity.<br />
-            <span className="text-text/60">Enterprise Intelligence.</span>
+            Secure AI for<br />
+            <span className="text-text/60">Healthcare Teams.</span>
           </motion.h1>
 
           <motion.p
             variants={itemVariants}
             className="text-xl md:text-2xl text-text/70 mb-12 max-w-2xl mx-auto leading-relaxed"
           >
-            Prow delivers secure, intelligent AI that integrates seamlessly into your workflow. 
-            Built for teams who demand precision without compromise.
+            Prow delivers HIPAA-compliant AI that helps healthcare providers make faster, more informed decisions. 
+            Built for medical teams who demand security, accuracy, and compliance.
           </motion.p>
 
           <motion.div
@@ -86,10 +86,10 @@ export default function Hero() {
             className="mt-20 pt-12 border-t border-text/10"
           >
             <p className="text-sm text-text/50 mb-6 uppercase tracking-wider font-heading">
-              Trusted by leading enterprises
+              Trusted by leading healthcare organizations
             </p>
             <div className="flex flex-wrap justify-center items-center gap-8 opacity-40">
-              {['Acme Corp', 'TechFlow', 'DataSys', 'CloudVault'].map((company, i) => (
+              {['Regional Health System', 'Community Hospital', 'Medical Group', 'Health Network'].map((company, i) => (
                 <motion.div
                   key={company}
                   initial={{ opacity: 0 }}
@@ -107,6 +107,7 @@ export default function Hero() {
     </section>
   )
 }
+
 
 
 

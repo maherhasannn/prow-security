@@ -6,23 +6,23 @@ import { useRef } from 'react'
 
 const features = [
   {
-    title: 'Secure by Design',
-    description: 'Enterprise-grade encryption and compliance built into every interaction. Your data never leaves your control.',
+    title: 'HIPAA-Compliant by Design',
+    description: 'End-to-end encryption and HIPAA safeguards built into every interaction. PHI stays protected and never trains models.',
     icon: '🔒',
   },
   {
-    title: 'Intelligent Context',
-    description: 'Understands your company\'s knowledge base, policies, and procedures. Answers that reflect your organization.',
+    title: 'Clinical Intelligence',
+    description: 'Understands medical protocols, clinical guidelines, and your organization\'s policies. Answers grounded in evidence-based medicine.',
     icon: '🧠',
   },
   {
-    title: 'Seamless Integration',
-    description: 'Works where you work. Slack, Teams, email—Prow integrates naturally into your existing tools.',
+    title: 'EHR Integration',
+    description: 'Works seamlessly with Epic, Cerner, and your existing clinical systems. No disruption to provider workflows.',
     icon: '🔌',
   },
   {
-    title: 'Real-Time Insights',
-    description: 'Surface critical information before you ask. Proactive suggestions that keep your team ahead.',
+    title: 'Point-of-Care Support',
+    description: 'Surface relevant patient information, treatment protocols, and clinical decision support when providers need it most.',
     icon: '⚡',
   },
 ]
@@ -59,10 +59,10 @@ export default function Features() {
               Capabilities
             </span>
             <h2 className="text-4xl md:text-6xl font-heading font-bold mb-6 text-balance">
-              Built for the Enterprise
+              Built for Healthcare
             </h2>
             <p className="text-xl text-text/70 max-w-2xl mx-auto">
-              Every feature designed with security, scale, and sophistication in mind.
+              Every feature designed with HIPAA compliance, clinical accuracy, and provider workflows in mind.
             </p>
           </motion.div>
 
@@ -92,6 +92,7 @@ export default function Features() {
     </section>
   )
 }
+
 
 
 

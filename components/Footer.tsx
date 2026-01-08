@@ -10,7 +10,7 @@ export default function Footer() {
           <div>
             <h3 className="font-heading text-xl font-bold mb-4">PROW</h3>
             <p className="text-sm text-text/60 leading-relaxed">
-              Secure AI for enterprise teams. Radical clarity, intelligent assistance.
+              HIPAA-compliant AI for healthcare teams. Secure, intelligent, and built for clinical workflows.
             </p>
           </div>
 
@@ -80,6 +80,7 @@ export default function Footer() {
     </footer>
   )
 }
+
 
 
 

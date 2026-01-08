@@ -344,7 +344,7 @@ export default function HIPAASafeguards() {
             </h2>
             <p className="text-xl text-text/70 max-w-2xl mx-auto">
               All three safeguard categories must be addressed for full HIPAA compliance. 
-              Prow ensures comprehensive coverage across administrative, physical, and technical safeguards.
+              Prow ensures comprehensive coverage across administrative, physical, and technical safeguards for healthcare organizations.
             </p>
           </motion.div>
 

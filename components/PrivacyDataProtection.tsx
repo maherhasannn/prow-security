@@ -68,9 +68,9 @@ export default function PrivacyDataProtection() {
               Your Data, Your Control
             </h2>
             <p className="text-lg text-text/70 mb-8 leading-relaxed">
-              Enterprise-grade privacy controls ensure your sensitive data never trains models, 
-              never leaks across tenants, and never leaves your control. Built for healthcare, 
-              finance, and any organization that demands absolute data sovereignty.
+              Healthcare-grade privacy controls ensure PHI never trains models, 
+              never leaks across organizations, and never leaves your control. Built specifically 
+              for healthcare providers who demand absolute protection of patient data.
             </p>
 
             <div className="space-y-6">

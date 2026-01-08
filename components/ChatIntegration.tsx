@@ -36,11 +36,11 @@ export default function ChatIntegration() {
               Integrations
             </span>
             <h2 className="text-4xl md:text-6xl font-heading font-bold mb-6 text-balance">
-              Works Where You Work
+              Works in Your Clinical Workflow
             </h2>
             <p className="text-xl text-text/70 max-w-2xl mx-auto">
-              Prow slides seamlessly into Slack, Teams, and your existing tools. 
-              No disruption, just intelligent assistance when you need it.
+              Prow integrates seamlessly with Epic, Cerner, and your existing clinical systems. 
+              No workflow disruption—just intelligent support when providers need it.
             </p>
           </motion.div>
         </motion.div>
@@ -60,7 +60,7 @@ export default function ChatIntegration() {
           transition={{ duration: 0.6, delay: 0.6 }}
           className="mt-16 flex flex-wrap justify-center gap-8"
         >
-          {['Slack', 'Microsoft Teams', 'Email', 'API'].map((platform, i) => (
+          {['Epic', 'Cerner', 'Allscripts', 'API'].map((platform, i) => (
             <motion.div
               key={platform}
               whileHover={{ scale: 1.05, y: -2 }}
@@ -92,9 +92,9 @@ function ChatInterface() {
       <div className="p-6 space-y-4">
         {/* Messages */}
         {[
-          { text: 'What\'s our Q4 sales target?', side: 'right' },
-          { text: 'Based on the latest forecast, our Q4 target is $12.5M.', side: 'left', isProw: true },
-          { text: 'Can you break that down by region?', side: 'right' },
+          { text: 'What are the treatment guidelines for Type 2 diabetes?', side: 'right' },
+          { text: 'Based on ADA 2024 guidelines, first-line therapy includes metformin with lifestyle modifications. For this patient with HbA1c of 8.2%, consider adding SGLT2 inhibitor or GLP-1 receptor agonist.', side: 'left', isProw: true },
+          { text: 'What about contraindications for this patient?', side: 'right' },
         ].map((msg, i) => (
           <motion.div
             key={i}
@@ -144,7 +144,7 @@ function ChatInterface() {
               Sources
             </div>
             <div className="space-y-1.5">
-              {['Sales Forecast Q4.pdf', 'Regional Targets.xlsx'].map((source, i) => (
+              {['ADA Guidelines 2024.pdf', 'Patient Chart - EMR.pdf'].map((source, i) => (
                 <motion.div
                   key={source}
                   initial={{ opacity: 0 }}
@@ -162,6 +162,7 @@ function ChatInterface() {
     </div>
   )
 }
+
 
 
 
