@@ -1,8 +1,6 @@
-# Prow — HIPAA-Compliant AI for Healthcare
+# Prow Frontend
 
-A production-grade frontend website for Prow, a HIPAA-compliant AI platform designed for healthcare organizations. Built with Next.js, TypeScript, Tailwind CSS, and Framer Motion.
-
-**This is the main frontend application.** The index page (`app/page.tsx`) serves the complete website interface.
+A production-grade frontend website for Prow, a secure AI service for enterprise employees. Built with Next.js, TypeScript, Tailwind CSS, and Framer Motion.
 
 ## Design Philosophy
 
@@ -38,60 +36,38 @@ Open [http://localhost:3000](http://localhost:3000) to view the site.
 ### Build for Production
 
 ```bash
-# Build static export (generates index.html in /out directory)
 npm run build
+npm start
 ```
-
-This will generate a static site in the `out/` directory with `index.html` as the entry point, ready for GitHub Pages deployment.
-
-### GitHub Pages Deployment
-
-1. Build the static site:
-   ```bash
-   npm run build
-   ```
-
-2. The `out/` directory will contain `index.html` and all static assets.
-
-3. For GitHub Pages:
-   - **Option A**: Commit the `out/` directory and configure GitHub Pages to serve from `/out`
-   - **Option B**: Use GitHub Actions to automatically build and deploy (recommended)
-
-4. If committing `out/` manually, you may need to remove `/out/` from `.gitignore` temporarily.
 
 ## Project Structure
 
 ```
 prowEncryption/
 ├── app/
-│   ├── layout.tsx              # Root layout with font configuration
-│   ├── page.tsx                # Main index page - serves the frontend website
-│   └── globals.css             # Global styles and CSS variables
+│   ├── layout.tsx          # Root layout with font configuration
+│   ├── page.tsx             # Main page composition
+│   └── globals.css          # Global styles and CSS variables
 ├── components/
-│   ├── Navigation.tsx          # Fixed navigation with scroll effects
-│   ├── Hero.tsx                # Hero section with staggered animations
-│   ├── Features.tsx            # Feature grid with hover effects
-│   ├── HIPAASafeguards.tsx     # HIPAA compliance safeguards section
-│   ├── PrivacyDataProtection.tsx  # Privacy and data protection features
-│   ├── ChatIntegration.tsx     # EHR integration and chat interface
-│   └── Footer.tsx              # Footer component
+│   ├── Navigation.tsx       # Fixed navigation with scroll effects
+│   ├── Hero.tsx             # Hero section with staggered animations
+│   ├── Features.tsx         # Feature grid with hover effects
+│   ├── SecurityVisualization.tsx  # Abstract security barrier visualization
+│   ├── KnowledgePool.tsx    # Knowledge network visualization
+│   ├── ChatIntegration.tsx  # Chat interface mockup with sidebar
+│   └── Footer.tsx           # Footer component
 └── package.json
 ```
 
-**Note:** The main entry point is `app/page.tsx`, which renders the complete frontend website.
-
 ## Features
 
-- **HIPAA Compliance**: Comprehensive coverage of administrative, physical, and technical safeguards
-- **Privacy & Data Protection**: No training on customer data, private AI sessions, PHI guardrails
-- **Healthcare-Focused**: Built for clinical workflows with EHR integration (Epic, Cerner, Allscripts)
 - **Staggered Page Loads**: Elements slide up and fade in with custom bezier curves
 - **Scroll-Triggered Animations**: Components animate as they enter the viewport
 - **Micro-interactions**: Hover effects on buttons and cards
-- **Animated Visualizations**: 
-  - HIPAA safeguard category animations
-  - Privacy protection visualizations
-  - EHR integration mockups
+- **Abstract Visualizations**: 
+  - Security barrier with particle filtering
+  - Knowledge network with animated nodes
+  - Chat integration mockup with sliding sidebar
 - **Responsive Design**: Mobile-first approach with breakpoints
 - **Accessibility**: Semantic HTML and high contrast ratios
 
