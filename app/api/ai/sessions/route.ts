@@ -19,20 +19,16 @@ export async function GET(request: NextRequest) {
     const url = new URL(request.url)
     const workspaceId = url.searchParams.get('workspaceId')
 
-    let query = db
-      .select()
-      .from(aiSessions)
-      .where(eq(aiSessions.userId, session.user.id))
-
+    const conditions = [eq(aiSessions.userId, session.user.id)]
     if (workspaceId) {
-      query = query.where(
-        and(
-          eq(aiSessions.workspaceId, workspaceId)
-        )
-      ) as typeof query
+      conditions.push(eq(aiSessions.workspaceId, workspaceId))
     }
 
-    const sessions = await query.orderBy(aiSessions.createdAt)
+    const sessions = await db
+      .select()
+      .from(aiSessions)
+      .where(and(...conditions))
+      .orderBy(aiSessions.createdAt)
 
     return NextResponse.json({ sessions })
   } catch (error) {
