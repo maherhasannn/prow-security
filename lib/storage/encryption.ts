@@ -11,7 +11,10 @@ const KEY_LENGTH = 32
  */
 function deriveKey(masterKey: string, organizationId: string): Buffer {
   if (!masterKey) {
-    throw new Error('ENCRYPTION_KEY environment variable is not set')
+    throw new Error(
+      'ENCRYPTION_KEY environment variable is not set. ' +
+      'Please configure it in your Vercel project settings under Settings > Environment Variables.'
+    )
   }
   
   return crypto.pbkdf2Sync(

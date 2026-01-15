@@ -1,8 +1,16 @@
 import { put, head, del } from '@vercel/blob'
 import { encryptFile, decryptFile } from './encryption'
 
-if (!process.env.BLOB_READ_WRITE_TOKEN) {
-  throw new Error('BLOB_READ_WRITE_TOKEN environment variable is not set')
+// Don't throw during build - Vercel sets env vars at runtime
+// We'll check when functions are actually called
+function getBlobToken(): string {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    throw new Error(
+      'BLOB_READ_WRITE_TOKEN environment variable is not set. ' +
+      'Please configure it in your Vercel project settings under Settings > Environment Variables.'
+    )
+  }
+  return process.env.BLOB_READ_WRITE_TOKEN
 }
 
 export interface UploadOptions {
@@ -37,7 +45,7 @@ export async function uploadEncryptedFile(
     access: 'public',
     addRandomSuffix: options.addRandomSuffix ?? true,
     contentType: options.contentType,
-    token: process.env.BLOB_READ_WRITE_TOKEN,
+    token: getBlobToken(),
   })
 
   return {
@@ -61,7 +69,7 @@ export async function downloadAndDecryptFile(
   // Download the encrypted file
   const response = await fetch(blobUrl, {
     headers: {
-      Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`,
+      Authorization: `Bearer ${getBlobToken()}`,
     },
   })
 
@@ -80,7 +88,7 @@ export async function downloadAndDecryptFile(
  */
 export async function deleteBlob(blobUrl: string): Promise<void> {
   await del(blobUrl, {
-    token: process.env.BLOB_READ_WRITE_TOKEN,
+    token: getBlobToken(),
   })
 }
 
@@ -89,7 +97,7 @@ export async function deleteBlob(blobUrl: string): Promise<void> {
  */
 export async function getBlobMetadata(blobUrl: string) {
   const blob = await head(blobUrl, {
-    token: process.env.BLOB_READ_WRITE_TOKEN,
+    token: getBlobToken(),
   })
   return blob
 }
