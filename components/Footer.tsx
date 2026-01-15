@@ -25,7 +25,7 @@ export default function Footer() {
                 { label: 'Data Inputs', href: '/#data-inputs' },
                 { label: 'Pricing', href: '/pricing' },
               ].map((item) => (
-                <li key={item}>
+                <li key={item.label}>
                   <a href={item.href} className="text-sm text-text/60 hover:text-text transition-colors">
                     {item.label}
                   </a>
@@ -45,7 +45,7 @@ export default function Footer() {
                 { label: 'Careers', href: '/company' },
                 { label: 'Contact', href: '/company' },
               ].map((item) => (
-                <li key={item}>
+                <li key={item.label}>
                   <a href={item.href} className="text-sm text-text/60 hover:text-text transition-colors">
                     {item.label}
                   </a>
