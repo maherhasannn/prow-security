@@ -31,10 +31,8 @@ export async function uploadEncryptedFile(
 
   // Upload encrypted file to Vercel Blob
   // Convert Buffer to ArrayBuffer for Vercel Blob API compatibility
-  const encryptedArrayBuffer = encrypted.buffer.slice(
-    encrypted.byteOffset,
-    encrypted.byteOffset + encrypted.byteLength
-  )
+  // Create a new ArrayBuffer to ensure it's not a SharedArrayBuffer
+  const encryptedArrayBuffer = new Uint8Array(encrypted).buffer
   const blob = await put(filename, encryptedArrayBuffer, {
     access: 'private',
     addRandomSuffix: options.addRandomSuffix ?? true,
