@@ -2,7 +2,7 @@
 
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import CreateWorkspaceModal from './CreateWorkspaceModal'
@@ -28,13 +28,7 @@ export default function Dashboard() {
     }
   }, [status, router])
 
-  useEffect(() => {
-    if (session) {
-      fetchWorkspaces()
-    }
-  }, [session])
-
-  const fetchWorkspaces = async () => {
+  const fetchWorkspaces = useCallback(async () => {
     try {
       const response = await fetch('/api/workspaces')
       if (response.ok) {
@@ -46,7 +40,13 @@ export default function Dashboard() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    if (session) {
+      fetchWorkspaces()
+    }
+  }, [session, fetchWorkspaces])
 
   if (status === 'loading' || loading) {
     return (

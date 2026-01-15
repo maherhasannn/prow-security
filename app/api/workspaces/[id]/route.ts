@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { workspaces } from '@/lib/db/schema'
 import { eq, and } from 'drizzle-orm'
-import { requireAuth, getUserOrganizationId } from '@/lib/auth/middleware'
+import { requireAuth, getUserOrganizationId, requireRole } from '@/lib/auth/middleware'
 import { updateWorkspaceSchema } from '@/lib/utils/validation'
 import { handleError, NotFoundError, AuthorizationError } from '@/lib/utils/errors'
 import { logAuditEvent, getClientIp, getClientUserAgent } from '@/lib/audit/logger'
@@ -131,7 +131,6 @@ export async function DELETE(
     }
 
     // Only admins and owners can delete workspaces
-    const { requireRole } = await import('@/lib/auth/middleware')
     await requireRole(organizationId, 'admin')
 
     await db.delete(workspaces).where(eq(workspaces.id, params.id))

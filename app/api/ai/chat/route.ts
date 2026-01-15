@@ -27,7 +27,7 @@ export async function POST(request: Request) {
       )
     }
 
-    // Initialize Gemini provider with user's API key
+    // Initialize Gemini provider with user API key
     const provider = new GeminiProvider(apiKey)
 
     // Call Gemini API

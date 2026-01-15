@@ -81,7 +81,7 @@ export default function SecureChatInterface({
       // Use Gemini provider directly
       const systemPrompt = `You are PROW, a secure AI assistant for analyzing sensitive business data. 
 You have access to documents uploaded by the user. Use this information to answer questions accurately and securely.
-Never expose sensitive information unnecessarily. Always cite which documents you're referencing.
+Never expose sensitive information unnecessarily. Always cite which documents you are referencing.
 Keep responses professional, clear, and focused on business insights.
 ${context}`
 

@@ -1,12 +1,9 @@
+// QuickBooks Connect API - DISABLED
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAuth, getUserOrganizationId } from '@/lib/auth/middleware'
 import { handleError } from '@/lib/utils/errors'
-import { getQuickBooksAuthUrl } from '@/lib/quickbooks/oauth'
 import { requireWorkspaceAccess } from '@/lib/rbac/checks'
 
-/**
- * GET /api/quickbooks/connect - Initiate QuickBooks OAuth flow
- */
 export async function GET(request: NextRequest) {
   try {
     const session = await requireAuth()
@@ -22,20 +19,14 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Verify workspace access
     await requireWorkspaceAccess(workspaceId, organizationId, session.user.id)
 
-    // Generate state token (include workspaceId and organizationId for callback)
-    const state = Buffer.from(
-      JSON.stringify({ workspaceId, organizationId, userId: session.user.id })
-    ).toString('base64')
-
-    const authUrl = getQuickBooksAuthUrl(state)
-
-    return NextResponse.json({ authUrl, state })
+    return NextResponse.json(
+      { error: 'QuickBooks integration is disabled' },
+      { status: 503 }
+    )
   } catch (error) {
     const { message, statusCode } = handleError(error)
     return NextResponse.json({ error: message }, { status: statusCode })
   }
 }
-
