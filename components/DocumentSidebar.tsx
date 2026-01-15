@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { FileText, FileSpreadsheet, File, Check } from 'lucide-react'
 
 interface Document {
@@ -24,11 +24,7 @@ export default function DocumentSidebar({
   const [documents, setDocuments] = useState<Document[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchDocuments()
-  }, [workspaceId])
-
-  const fetchDocuments = async () => {
+  const fetchDocuments = useCallback(async () => {
     try {
       const response = await fetch(`/api/workspaces/${workspaceId}/documents`)
       if (response.ok) {
@@ -40,7 +36,11 @@ export default function DocumentSidebar({
     } finally {
       setLoading(false)
     }
-  }
+  }, [workspaceId])
+
+  useEffect(() => {
+    fetchDocuments()
+  }, [fetchDocuments])
 
   const getDocumentIcon = (type: string) => {
     switch (type) {

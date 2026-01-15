@@ -109,7 +109,7 @@ export default function SignInPage() {
 
           <div className="mt-6 text-center">
             <p className="text-sm text-text/60">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <Link href="/#waitlist" className="text-accent hover:underline">
                 Join the Beta
               </Link>

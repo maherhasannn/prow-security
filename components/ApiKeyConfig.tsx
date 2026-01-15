@@ -169,7 +169,7 @@ export default function ApiKeyConfig({
                         <p className="text-xs text-text/70">
                           <strong>Note:</strong> Your API key is stored locally in your
                           browser. It will not be shared with PROW servers. All API calls
-                          are made directly from your browser to Google's servers.
+                          are made directly from your browser to Google&apos;s servers.
                         </p>
                       </div>
                     </div>
