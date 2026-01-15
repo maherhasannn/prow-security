@@ -5,7 +5,9 @@ import * as schema from './schema'
 // Try to load .env.local if POSTGRES_URL is not set (for scripts)
 if (!process.env.POSTGRES_URL) {
   try {
-    require('dotenv').config({ path: '.env.local' })
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const dotenv = require('dotenv')
+    dotenv.config({ path: '.env.local' })
   } catch {
     // dotenv might not be available, that's okay
   }

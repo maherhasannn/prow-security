@@ -30,7 +30,12 @@ export async function uploadEncryptedFile(
   const encryptionKeyId = `${options.organizationId}-${Date.now()}`
 
   // Upload encrypted file to Vercel Blob
-  const blob = await put(filename, encrypted, {
+  // Convert Buffer to ArrayBuffer for Vercel Blob API compatibility
+  const encryptedArrayBuffer = encrypted.buffer.slice(
+    encrypted.byteOffset,
+    encrypted.byteOffset + encrypted.byteLength
+  )
+  const blob = await put(filename, encryptedArrayBuffer, {
     access: 'private',
     addRandomSuffix: options.addRandomSuffix ?? true,
     contentType: options.contentType,
