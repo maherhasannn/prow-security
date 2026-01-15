@@ -11,12 +11,20 @@ const nextConfig = {
     basePath: '/prow-security',
     assetPrefix: '/prow-security',
   }),
-  // Enable standalone output for Cloud Run
+  // Enable standalone output for GCP Cloud Run
   ...(isGCP && {
     output: 'standalone',
   }),
   images: {
     unoptimized: true,
+  },
+  // ESLint configuration for builds
+  eslint: {
+    ignoreDuringBuilds: false,
+  },
+  // TypeScript configuration for builds
+  typescript: {
+    ignoreBuildErrors: false,
   },
 }
 
