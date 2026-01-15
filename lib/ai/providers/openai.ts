@@ -29,10 +29,6 @@ export class OpenAIProvider implements AIProvider {
       })),
       temperature: options.temperature ?? 0.7,
       max_tokens: options.maxTokens,
-      // Explicitly disable training on user data
-      extra_body: {
-        training: false,
-      },
     })
 
     const message = response.choices[0]?.message?.content || ''
@@ -66,10 +62,6 @@ export class OpenAIProvider implements AIProvider {
       temperature: options.temperature ?? 0.7,
       max_tokens: options.maxTokens,
       stream: true,
-      // Explicitly disable training on user data
-      extra_body: {
-        training: false,
-      },
     })
 
     let fullContent = ''
