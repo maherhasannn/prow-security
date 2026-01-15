@@ -9,7 +9,7 @@ export default function ChatIntegration() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
-    <section id="integrations" className="py-32 px-6 md:px-12 bg-background">
+    <section id="data-inputs" className="py-32 px-6 md:px-12 bg-background">
       <div className="max-w-[var(--container-max-width)] mx-auto">
         <motion.div
           ref={ref}
@@ -33,14 +33,14 @@ export default function ChatIntegration() {
             }}
           >
             <span className="inline-block px-4 py-1.5 bg-background-alt text-xs font-heading font-semibold tracking-wider uppercase text-text/70 rounded-sm mb-6">
-              Integrations
+              Secure Data Inputs
             </span>
             <h2 className="text-4xl md:text-6xl font-heading font-bold mb-6 text-balance">
-              Works Where You Work
+              Bring Your Data Into a Private AI Workspace
             </h2>
             <p className="text-xl text-text/70 max-w-2xl mx-auto">
-              Prow integrates seamlessly with your existing systems and workflows. 
-              No disruption—just intelligent support when your team needs it most.
+              Start with Excel/CSV, PDFs, and QuickBooks. Ask questions across files and surface insights
+              without exporting or exposing sensitive data.
             </p>
           </motion.div>
         </motion.div>
@@ -60,7 +60,7 @@ export default function ChatIntegration() {
           transition={{ duration: 0.6, delay: 0.6 }}
           className="mt-16 flex flex-wrap justify-center gap-8"
         >
-          {['Epic', 'Cerner', 'Slack', 'API'].map((platform, i) => (
+          {['Excel/CSV', 'PDFs', 'QuickBooks (read-only)'].map((platform, i) => (
             <motion.div
               key={platform}
               whileHover={{ scale: 1.05, y: -2 }}
@@ -93,9 +93,9 @@ function ChatInterface() {
         {/* Chat Messages Area */}
         <div className="flex-1 p-6 space-y-4 min-w-0">
           {[
-            { text: 'What are the key points from the latest client briefing?', side: 'right' },
-            { text: 'Based on the briefing document, the key points include three main initiatives: Q4 campaign launch, media strategy pivot, and stakeholder communication timeline. All information is from your internal documents.', side: 'left', isProw: true },
-            { text: 'Can you summarize the media strategy changes?', side: 'right' },
+            { text: 'What were last quarter’s largest expense categories from QuickBooks?', side: 'right' },
+            { text: 'From your QuickBooks reports, the top categories were payroll, vendor services, and cloud infrastructure. I can break down totals by month if helpful.', side: 'left', isProw: true },
+            { text: 'Summarize the key risks noted in the Q4 board memo PDF.', side: 'right' },
           ].map((msg, i) => (
             <motion.div
               key={i}
@@ -146,7 +146,7 @@ function ChatInterface() {
               Sources
             </div>
             <div className="space-y-2">
-              {['Client Briefing Q4.pdf', 'Media Strategy Doc.pdf'].map((source, i) => (
+              {['Q4 Board Memo.pdf', 'QuickBooks Q4 Report.csv'].map((source, i) => (
                 <motion.div
                   key={source}
                   initial={{ opacity: 0 }}

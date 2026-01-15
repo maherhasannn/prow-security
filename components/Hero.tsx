@@ -28,7 +28,7 @@ const itemVariants = {
 
 export default function Hero() {
   return (
-    <section className="min-h-screen flex items-center justify-center px-6 md:px-12 pt-32 pb-20">
+    <section id="waitlist" className="min-h-screen flex items-center justify-center px-6 md:px-12 pt-32 pb-20">
       <div className="max-w-[var(--container-max-width)] mx-auto w-full">
         <motion.div
           variants={containerVariants}
@@ -41,7 +41,7 @@ export default function Hero() {
             className="mb-6"
           >
             <span className="inline-block px-4 py-1.5 bg-background-alt text-xs font-heading font-semibold tracking-wider uppercase text-text/70 rounded-sm">
-              Secure AI for Sensitive & Regulated Work
+              Secure AI for Sensitive Work
             </span>
           </motion.div>
 
@@ -50,15 +50,15 @@ export default function Hero() {
             className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-8 text-balance leading-[1.1] tracking-tight"
           >
             Secure AI Workspace<br />
-            <span className="text-text/60">for Sensitive & Regulated Work</span>
+            <span className="text-text/60">for Sensitive Work</span>
           </motion.h1>
 
           <motion.p
             variants={itemVariants}
             className="text-xl md:text-2xl text-text/70 mb-12 max-w-2xl mx-auto leading-relaxed"
           >
-            Prow delivers HIPAA-compliant AI for healthcare providers and a private AI workspace for publicists, journalists, and professional teams. 
-            Built for organizations that cannot risk data exposure.
+            PROW is a secure AI workspace that enables teams to think and talk with their data safely.
+            Built on a medical-grade security foundation for organizations that cannot risk data exposure.
           </motion.p>
 
           <motion.div
@@ -70,14 +70,14 @@ export default function Hero() {
               whileTap={{ scale: 0.95 }}
               className="px-8 py-4 bg-text text-background font-medium rounded-sm hover:bg-accent transition-colors shadow-lg"
             >
-              Start Free Trial — PROW® Pro
+              Join the Beta
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
               className="px-8 py-4 bg-transparent border-2 border-text/20 text-text font-medium rounded-sm hover:border-text/40 transition-colors"
             >
-              Join Waitlist — PROW® Health
+              View Product
             </motion.button>
           </motion.div>
 
@@ -89,7 +89,12 @@ export default function Hero() {
               Trusted by organizations that cannot risk data exposure
             </p>
             <div className="flex flex-wrap justify-center items-center gap-8 opacity-40">
-              {['Healthcare Providers', 'Medical Groups', 'Media Teams', 'Professional Organizations'].map((company, i) => (
+              {[
+                'SMBs with proprietary data',
+                'Journalists & media teams',
+                'PR & communications',
+                'Executives & consultants',
+              ].map((company, i) => (
                 <motion.div
                   key={company}
                   initial={{ opacity: 0 }}
@@ -111,7 +116,7 @@ export default function Hero() {
 
 
 
-
+ 
 
 
 

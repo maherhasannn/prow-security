@@ -15,8 +15,8 @@ const ibmPlexSans = IBM_Plex_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'Prow — Secure AI for Sensitive & Regulated Work',
-  description: 'Secure AI workspace for healthcare teams and high-trust professional work. HIPAA-compliant AI for healthcare providers and private AI workspace for teams handling sensitive information.',
+  title: 'PROW® — Secure AI for Sensitive Work',
+  description: 'Secure AI workspace for high-trust professional teams. Built on a medical-grade security foundation for organizations that cannot risk data exposure.',
 }
 
 export default function RootLayout({

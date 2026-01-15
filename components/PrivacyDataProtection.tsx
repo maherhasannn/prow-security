@@ -13,26 +13,26 @@ const features = [
     items: [
       'Hard guarantee: no model training on customer data',
       'No cross-tenant learning',
-      'No retained prompts unless explicitly configured',
+      'Organization-isolated AI workspaces',
     ],
   },
   {
-    title: 'Private AI Sessions',
-    icon: Lock,
-    items: [
-      'AI context isolated per organization',
-      'Memory scoped to the workspace, not the global model',
-      'Session controls: reset, expiration, disablement',
-    ],
-  },
-  {
-    title: 'PHI Guardrails',
+    title: 'High-Trust Audiences',
     icon: Shield,
     items: [
-      {
-        main: 'Ability to detect PHI',
-        subItems: ['Mask or restrict outputs', 'Disable risky prompts', 'Optional pre-processing layer for redaction or de-identification'],
-      },
+      'SMBs with proprietary data',
+      'Journalists and media professionals',
+      'PR and communications teams',
+      'Executives, analysts, and consultants',
+    ],
+  },
+  {
+    title: 'Secure Collaboration',
+    icon: Lock,
+    items: [
+      'Role-based access control (RBAC)',
+      'Full audit logging for uploads and AI usage',
+      'Policy-aware guardrails for sensitive data',
     ],
   },
 ]
@@ -42,7 +42,7 @@ export default function PrivacyDataProtection() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
-    <section className="py-32 px-6 md:px-12 bg-background">
+    <section id="trust" className="py-32 px-6 md:px-12 bg-background">
       <div className="max-w-[var(--container-max-width)] mx-auto">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <motion.div
@@ -62,15 +62,14 @@ export default function PrivacyDataProtection() {
             className="order-1 lg:order-2"
           >
             <span className="inline-block px-4 py-1.5 bg-background-alt text-xs font-heading font-semibold tracking-wider uppercase text-text/70 rounded-sm mb-6">
-              Privacy & Data Protection
+              Trusted by High-Trust Teams
             </span>
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-balance">
-              Your Data, Your Control
+              Built for Organizations That Cannot Risk Exposure
             </h2>
             <p className="text-lg text-text/70 mb-8 leading-relaxed">
-              Healthcare-grade privacy controls ensure PHI never trains models, 
-              never leaks across organizations, and never leaves your control. Built specifically 
-              for healthcare providers who demand absolute protection of patient data.
+              Medical-grade security refers to the rigor of the architecture, not a healthcare product claim.
+              PROW is designed to protect the most sensitive categories of data across high-trust professional teams.
             </p>
 
             <div className="space-y-6">

@@ -6,23 +6,23 @@ import { useRef } from 'react'
 
 const features = [
   {
-    title: 'HIPAA-Compliant by Design',
-    description: 'End-to-end encryption and HIPAA safeguards are built into every interaction. PHI and other sensitive data stay protected and never train models.',
+    title: 'Medical-Grade Security Foundation',
+    description: 'End-to-end encryption, private workspaces, and strict data isolation. Customer data never trains models.',
     icon: '🔒',
   },
   {
-    title: 'Clinical Intelligence',
-    description: 'Enables teams to ask questions, analyze information, and reason with their data using medical protocols, clinical guidelines, and organizational policies. Answers are grounded in evidence-based sources and controlled internal data.',
+    title: 'Secure Data Intelligence',
+    description: 'Ask questions, analyze documents, and reason with your data inside governed AI sessions built for trust.',
     icon: '🧠',
   },
   {
-    title: 'EHR Integration',
-    description: 'Bring your data from Epic, Cerner, and approved internal systems into a secure AI workspace. Think and talk with your data without disrupting existing workflows.',
+    title: 'Secure Data Inputs',
+    description: 'Excel/CSV, PDFs, and QuickBooks connected inside a private AI workspace for analysis-only workflows.',
     icon: '🔌',
   },
   {
-    title: 'Point-of-Care Support',
-    description: 'Surface relevant information, protocols, and decision support at the moment of need — enabling secure, real-time reasoning in clinical and other high-stakes professional workflows.',
+    title: 'Decision-Ready Insights',
+    description: 'Surface relevant information without exporting or exposing data, so teams can act confidently.',
     icon: '⚡',
   },
 ]
@@ -59,10 +59,10 @@ export default function Features() {
               Capabilities
             </span>
             <h2 className="text-4xl md:text-6xl font-heading font-bold mb-6 text-balance">
-              Built for Sensitive & Regulated Work
+              Built for High-Trust Work
             </h2>
             <p className="text-xl text-text/70 max-w-2xl mx-auto">
-              Every feature is designed so teams can think, talk, and collaborate with their data securely — with HIPAA compliance, data privacy, and controlled AI workflows as the foundation.
+              Every feature is designed so teams can think, analyze, and collaborate with their data securely.
             </p>
           </motion.div>
 

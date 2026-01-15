@@ -10,7 +10,7 @@ export default function Footer() {
           <div>
             <h3 className="font-heading text-xl font-bold mb-4">PROW</h3>
             <p className="text-sm text-text/60 leading-relaxed">
-              Secure AI workspace for healthcare teams and high-trust professional work. Built for organizations that cannot risk data exposure.
+              Secure AI workspace for high-trust professional teams. Built on a medical-grade security foundation for organizations that cannot risk data exposure.
             </p>
           </div>
 
@@ -19,10 +19,15 @@ export default function Footer() {
               Product
             </h4>
             <ul className="space-y-2">
-              {['Features', 'Security', 'Integrations', 'Pricing'].map((item) => (
+              {[
+                { label: 'Product', href: '/product' },
+                { label: 'Security', href: '/#security-layer' },
+                { label: 'Data Inputs', href: '/#data-inputs' },
+                { label: 'Pricing', href: '/pricing' },
+              ].map((item) => (
                 <li key={item}>
-                  <a href="#" className="text-sm text-text/60 hover:text-text transition-colors">
-                    {item}
+                  <a href={item.href} className="text-sm text-text/60 hover:text-text transition-colors">
+                    {item.label}
                   </a>
                 </li>
               ))}
@@ -34,10 +39,15 @@ export default function Footer() {
               Company
             </h4>
             <ul className="space-y-2">
-              {['About', 'Blog', 'Careers', 'Contact'].map((item) => (
+              {[
+                { label: 'About', href: '/company' },
+                { label: 'Blog', href: '/company' },
+                { label: 'Careers', href: '/company' },
+                { label: 'Contact', href: '/company' },
+              ].map((item) => (
                 <li key={item}>
-                  <a href="#" className="text-sm text-text/60 hover:text-text transition-colors">
-                    {item}
+                  <a href={item.href} className="text-sm text-text/60 hover:text-text transition-colors">
+                    {item.label}
                   </a>
                 </li>
               ))}
@@ -49,7 +59,7 @@ export default function Footer() {
               Legal
             </h4>
             <ul className="space-y-2">
-              {['Privacy', 'Terms', 'Security', 'Compliance'].map((item) => (
+              {['Privacy', 'Terms', 'Security'].map((item) => (
                 <li key={item}>
                   <a href="#" className="text-sm text-text/60 hover:text-text transition-colors">
                     {item}
