@@ -76,7 +76,6 @@ export class AnthropicProvider implements AIProvider {
     })
 
     let fullContent = ''
-    let usage: AIChatResponse['usage'] | undefined
 
     for await (const event of stream) {
       if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
@@ -84,19 +83,13 @@ export class AnthropicProvider implements AIProvider {
         fullContent += text
         onChunk(text)
       }
-
-      if (event.type === 'message_stop' && event.message?.usage) {
-        usage = {
-          promptTokens: event.message.usage.input_tokens,
-          completionTokens: event.message.usage.output_tokens,
-          totalTokens: event.message.usage.input_tokens + event.message.usage.output_tokens,
-        }
-      }
     }
 
+    // Note: Usage information is not easily accessible from Anthropic streaming responses
+    // For usage tracking, use the non-streaming chat method instead
     return {
       content: fullContent,
-      usage,
+      usage: undefined,
     }
   }
 
