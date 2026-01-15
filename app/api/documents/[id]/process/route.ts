@@ -5,7 +5,7 @@ import { eq, and } from 'drizzle-orm'
 import { requireAuth, getUserOrganizationId } from '@/lib/auth/middleware'
 import { handleError, NotFoundError } from '@/lib/utils/errors'
 import { downloadAndDecryptFile } from '@/lib/storage/blob'
-import { decrypt } from '@/lib/storage/encryption'
+import { decrypt, encrypt } from '@/lib/storage/encryption'
 import { parseExcel, parseCSV } from '@/lib/documents/processors/excel'
 import { parsePDF } from '@/lib/documents/processors/pdf'
 
