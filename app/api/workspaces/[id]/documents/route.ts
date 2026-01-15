@@ -1,40 +1,59 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
+import { auth } from '@/lib/auth/config'
 import { db } from '@/lib/db'
-import { documents } from '@/lib/db/schema'
+import { documents, workspaces } from '@/lib/db/schema'
 import { eq, and } from 'drizzle-orm'
-import { requireAuth, getUserOrganizationId } from '@/lib/auth/middleware'
-import { handleError, NotFoundError } from '@/lib/utils/errors'
-import { requireWorkspaceAccess } from '@/lib/rbac/checks'
+import { getUserOrganizationId } from '@/lib/auth/middleware'
 
-/**
- * GET /api/workspaces/[id]/documents - List documents in a workspace
- */
 export async function GET(
-  request: NextRequest,
+  request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await requireAuth()
+    const session = await auth()
+
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const organizationId = await getUserOrganizationId()
 
-    // Verify workspace access
-    await requireWorkspaceAccess(params.id, organizationId, session.user.id)
-
-    const workspaceDocuments = await db
+    // Verify workspace exists and user has access
+    const [workspace] = await db
       .select()
-      .from(documents)
+      .from(workspaces)
       .where(
         and(
-          eq(documents.workspaceId, params.id),
-          eq(documents.organizationId, organizationId)
+          eq(workspaces.id, params.id),
+          eq(workspaces.organizationId, organizationId)
         )
       )
+      .limit(1)
+
+    if (!workspace) {
+      return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })
+    }
+
+    // Fetch documents for this workspace
+    const workspaceDocuments = await db
+      .select({
+        id: documents.id,
+        name: documents.name,
+        type: documents.type,
+        createdAt: documents.createdAt,
+      })
+      .from(documents)
+      .where(eq(documents.workspaceId, params.id))
       .orderBy(documents.createdAt)
 
-    return NextResponse.json({ documents: workspaceDocuments })
+    return NextResponse.json({
+      documents: workspaceDocuments,
+    })
   } catch (error) {
-    const { message, statusCode } = handleError(error)
-    return NextResponse.json({ error: message }, { status: statusCode })
+    console.error('Error fetching documents:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
   }
 }
-

@@ -51,13 +51,13 @@ export default function Navigation() {
             </Link>
           </div>
 
-          <Link href="/#waitlist">
+          <Link href="/auth/signin">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="px-6 py-2.5 bg-text text-background text-sm font-medium rounded-sm hover:bg-accent transition-colors"
             >
-              Join the Beta
+              Sign In
             </motion.button>
           </Link>
         </div>
