@@ -1,6 +1,6 @@
 import { db } from '@/lib/db'
 import { documentChunks, documents } from '@/lib/db/schema'
-import { eq, and, inArray } from 'drizzle-orm'
+import { eq, and, inArray, isNotNull } from 'drizzle-orm'
 import { decrypt } from '@/lib/storage/encryption'
 import { type AIMessage } from './providers/base'
 
@@ -13,29 +13,25 @@ export async function buildDocumentContext(
   documentIds?: string[],
   maxChunks: number = 10
 ): Promise<string> {
-  let chunksQuery = db
+  const conditions = [
+    eq(documents.workspaceId, workspaceId),
+    eq(documents.organizationId, organizationId),
+    isNotNull(documents.processedAt),
+  ]
+
+  // Filter by specific documents if provided
+  if (documentIds && documentIds.length > 0) {
+    conditions.push(inArray(documents.id, documentIds))
+  }
+
+  const results = await db
     .select({
       chunk: documentChunks,
       document: documents,
     })
     .from(documentChunks)
     .innerJoin(documents, eq(documentChunks.documentId, documents.id))
-    .where(
-      and(
-        eq(documents.workspaceId, workspaceId),
-        eq(documents.organizationId, organizationId),
-        documents.processedAt !== null
-      )
-    )
-
-  // Filter by specific documents if provided
-  if (documentIds && documentIds.length > 0) {
-    chunksQuery = chunksQuery.where(
-      inArray(documents.id, documentIds)
-    ) as typeof chunksQuery
-  }
-
-  const results = await chunksQuery
+    .where(and(...conditions))
     .orderBy(documentChunks.chunkIndex)
     .limit(maxChunks)
 
