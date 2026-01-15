@@ -96,53 +96,18 @@ export default function PrivacyDataProtection() {
                       )}
                     </div>
                     <ul className="space-y-2">
-                      {feature.items.map((item, itemIndex) => {
-                        if (typeof item === 'string') {
-                          return (
-                            <motion.li
-                              key={itemIndex}
-                              initial={{ opacity: 0, x: -10 }}
-                              animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
-                              transition={{ delay: 0.4 + featureIndex * 0.15 + itemIndex * 0.05, duration: 0.4 }}
-                              className="flex items-start gap-3"
-                            >
-                              <span className="text-accent mt-1 flex-shrink-0">✓</span>
-                              <span className="text-text/80 text-sm leading-relaxed">{item}</span>
-                            </motion.li>
-                          )
-                        } else {
-                          return (
-                            <li key={itemIndex} className="space-y-2">
-                              <motion.div
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
-                                transition={{ delay: 0.4 + featureIndex * 0.15, duration: 0.4 }}
-                                className="flex items-start gap-3"
-                              >
-                                <span className="text-accent mt-1 flex-shrink-0">✓</span>
-                                <span className="text-text/80 text-sm leading-relaxed font-medium">{item.main}</span>
-                              </motion.div>
-                              <ul className="ml-6 space-y-1.5">
-                                {item.subItems.map((subItem, subIndex) => (
-                                  <motion.li
-                                    key={subIndex}
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
-                                    transition={{
-                                      delay: 0.45 + featureIndex * 0.15 + (subIndex + 1) * 0.05,
-                                      duration: 0.4,
-                                    }}
-                                    className="flex items-start gap-2"
-                                  >
-                                    <span className="text-accent/60 mt-1 flex-shrink-0 text-xs">•</span>
-                                    <span className="text-text/70 text-sm leading-relaxed">{subItem}</span>
-                                  </motion.li>
-                                ))}
-                              </ul>
-                            </li>
-                          )
-                        }
-                      })}
+                      {feature.items.map((item, itemIndex) => (
+                        <motion.li
+                          key={itemIndex}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
+                          transition={{ delay: 0.4 + featureIndex * 0.15 + itemIndex * 0.05, duration: 0.4 }}
+                          className="flex items-start gap-3"
+                        >
+                          <span className="text-accent mt-1 flex-shrink-0">✓</span>
+                          <span className="text-text/80 text-sm leading-relaxed">{item}</span>
+                        </motion.li>
+                      ))}
                     </ul>
                   </motion.div>
                 )
