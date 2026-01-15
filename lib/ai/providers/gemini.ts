@@ -58,7 +58,18 @@ export class GeminiProvider implements AIProvider {
       )
     }
 
-    const data = await response.json()
+    const data = (await response.json()) as {
+      candidates?: Array<{
+        content?: {
+          parts?: Array<{ text?: string }>
+        }
+      }>
+      usageMetadata?: {
+        promptTokenCount?: number
+        candidatesTokenCount?: number
+        totalTokenCount?: number
+      }
+    }
 
     const text =
       data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated'
@@ -142,7 +153,18 @@ export class GeminiProvider implements AIProvider {
       for (const line of lines) {
         if (line.startsWith('data: ')) {
           try {
-            const data = JSON.parse(line.slice(6))
+            const data = JSON.parse(line.slice(6)) as {
+              candidates?: Array<{
+                content?: {
+                  parts?: Array<{ text?: string }>
+                }
+              }>
+              usageMetadata?: {
+                promptTokenCount?: number
+                candidatesTokenCount?: number
+                totalTokenCount?: number
+              }
+            }
             const text = data.candidates?.[0]?.content?.parts?.[0]?.text
 
             if (text) {

@@ -186,15 +186,17 @@ export async function fetchTransactions(
       resolve(
         transactionList.map((tx: unknown) => {
           const t = tx as Record<string, unknown>
+          const line = Array.isArray(t.Line) ? (t.Line as Array<Record<string, unknown>>)[0] : undefined
+          const lineDescription = line?.Description
+          const accountRef = line?.AccountRef as { name?: string } | undefined
+          
           return {
             id: String(t.Id || ''),
             date: String(t.TxnDate || ''),
             amount: Number(t.TotalAmt || 0),
-            description: String(t.DocNumber || t.Line?.[0]?.Description || ''),
+            description: String(t.DocNumber || lineDescription || ''),
             type: String(t.TxnType || ''),
-            account: t.Line?.[0]?.AccountRef?.name
-              ? String(t.Line[0].AccountRef.name)
-              : undefined,
+            account: accountRef?.name ? String(accountRef.name) : undefined,
           } as QuickBooksTransaction
         })
       )

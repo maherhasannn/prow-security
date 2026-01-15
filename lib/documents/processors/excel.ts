@@ -33,7 +33,8 @@ export async function parseExcel(fileBuffer: Buffer): Promise<ExcelParseResult> 
     if (jsonData.length === 0) continue
 
     // Extract headers
-    const headers = Object.keys(jsonData[0] || {})
+    const firstRow = jsonData[0]
+    const headers = firstRow ? Object.keys(firstRow) : []
 
     sheets.push({
       name: sheetName,
@@ -81,7 +82,8 @@ export async function parseCSV(fileBuffer: Buffer): Promise<ExcelParseResult> {
     raw: false,
   })
 
-  const headers = jsonData.length > 0 ? Object.keys(jsonData[0] || {}) : []
+  const firstRow = jsonData.length > 0 ? jsonData[0] : undefined
+  const headers = firstRow ? Object.keys(firstRow) : []
 
   const chunks = chunkStructuredData(jsonData)
 
