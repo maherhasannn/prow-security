@@ -34,7 +34,7 @@ export async function uploadEncryptedFile(
   // Create a new ArrayBuffer to ensure it's not a SharedArrayBuffer
   const encryptedArrayBuffer = new Uint8Array(encrypted).buffer
   const blob = await put(filename, encryptedArrayBuffer, {
-    access: 'private',
+    access: 'public',
     addRandomSuffix: options.addRandomSuffix ?? true,
     contentType: options.contentType,
     token: process.env.BLOB_READ_WRITE_TOKEN,
