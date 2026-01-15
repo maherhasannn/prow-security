@@ -3,6 +3,9 @@ import { decrypt, encrypt } from '@/lib/storage/encryption'
 import { type QuickBooksTokens, type QuickBooksReport, type QuickBooksTransaction, type QuickBooksAccount } from './types'
 import { refreshQuickBooksToken } from './oauth'
 
+// Re-export types for convenience
+export type { QuickBooksTokens, QuickBooksReport, QuickBooksTransaction, QuickBooksAccount }
+
 /**
  * Creates a QuickBooks API client
  */
