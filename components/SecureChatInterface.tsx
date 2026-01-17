@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { ArrowLeft, Send, Lock } from 'lucide-react'
+import { ArrowLeft, Send, Lock, Info } from 'lucide-react'
 import DocumentSidebar from './DocumentSidebar'
 import SessionTimer from './SessionTimer'
 
@@ -29,7 +29,11 @@ export default function SecureChatInterface({
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [selectedDocuments, setSelectedDocuments] = useState<string[]>([])
+  const [tokensPerSecond, setTokensPerSecond] = useState<number>(0)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const totalTokensStreamedRef = useRef<number>(0)
+  const streamStartTimeRef = useRef<number | null>(null)
+  const tokenUpdateIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -86,6 +90,27 @@ ${context}`
 
       // Add placeholder message immediately
       setMessages((prev) => [...prev, assistantMessage])
+
+      // Reset token tracking for new stream
+      totalTokensStreamedRef.current = 0
+      streamStartTimeRef.current = Date.now()
+      setTokensPerSecond(0)
+
+      // Clear any existing token update interval
+      if (tokenUpdateIntervalRef.current) {
+        clearInterval(tokenUpdateIntervalRef.current)
+      }
+
+      // Set up interval to update tokens per second display
+      tokenUpdateIntervalRef.current = setInterval(() => {
+        if (streamStartTimeRef.current) {
+          const elapsedSeconds = (Date.now() - streamStartTimeRef.current) / 1000
+          if (elapsedSeconds > 0 && totalTokensStreamedRef.current > 0) {
+            const rate = Math.round(totalTokensStreamedRef.current / elapsedSeconds)
+            setTokensPerSecond(rate)
+          }
+        }
+      }, 100) // Update every 100ms for smooth display
 
       // Call our API route with streaming enabled (API key is handled server-side)
       const apiResponse = await fetch('/api/ai/chat?stream=true', {
@@ -144,11 +169,25 @@ ${context}`
               }
 
               if (data.chunk !== undefined) {
+                // Estimate tokens: roughly 1 token ≈ 4 characters for English text
+                const chunkText = data.chunk || ''
+                const estimatedTokens = Math.ceil(chunkText.length / 4)
+                totalTokensStreamedRef.current += estimatedTokens
+
+                // Update tokens per second display
+                if (streamStartTimeRef.current) {
+                  const elapsedSeconds = (Date.now() - streamStartTimeRef.current) / 1000
+                  if (elapsedSeconds > 0) {
+                    const rate = Math.round(totalTokensStreamedRef.current / elapsedSeconds)
+                    setTokensPerSecond(rate)
+                  }
+                }
+
                 // Update message content incrementally
                 setMessages((prev) =>
                   prev.map((msg) =>
                     msg.id === assistantMessageId
-                      ? { ...msg, content: msg.content + (data.chunk || '') }
+                      ? { ...msg, content: msg.content + chunkText }
                       : msg
                   )
                 )
@@ -163,6 +202,17 @@ ${context}`
                       : msg
                   )
                 )
+                // Clear token tracking
+                if (tokenUpdateIntervalRef.current) {
+                  clearInterval(tokenUpdateIntervalRef.current)
+                  tokenUpdateIntervalRef.current = null
+                }
+                streamStartTimeRef.current = null
+                // Keep final tokensPerSecond visible for a moment, then reset
+                setTimeout(() => {
+                  setTokensPerSecond(0)
+                  totalTokensStreamedRef.current = 0
+                }, 2000)
                 break
               }
             } catch (parseError) {
@@ -187,10 +237,24 @@ ${context}`
               }
 
               if (data.chunk !== undefined) {
+                // Estimate tokens: roughly 1 token ≈ 4 characters for English text
+                const chunkText = data.chunk || ''
+                const estimatedTokens = Math.ceil(chunkText.length / 4)
+                totalTokensStreamedRef.current += estimatedTokens
+
+                // Update tokens per second display
+                if (streamStartTimeRef.current) {
+                  const elapsedSeconds = (Date.now() - streamStartTimeRef.current) / 1000
+                  if (elapsedSeconds > 0) {
+                    const rate = Math.round(totalTokensStreamedRef.current / elapsedSeconds)
+                    setTokensPerSecond(rate)
+                  }
+                }
+
                 setMessages((prev) =>
                   prev.map((msg) =>
                     msg.id === assistantMessageId
-                      ? { ...msg, content: msg.content + (data.chunk || '') }
+                      ? { ...msg, content: msg.content + chunkText }
                       : msg
                   )
                 )
@@ -214,6 +278,17 @@ ${context}`
                 : msg
             )
           )
+          // Clear token tracking
+          if (tokenUpdateIntervalRef.current) {
+            clearInterval(tokenUpdateIntervalRef.current)
+            tokenUpdateIntervalRef.current = null
+          }
+          streamStartTimeRef.current = null
+          // Keep final tokensPerSecond visible for a moment, then reset
+          setTimeout(() => {
+            setTokensPerSecond(0)
+            totalTokensStreamedRef.current = 0
+          }, 2000)
         }
       }
     } catch (error) {
@@ -240,10 +315,28 @@ ${context}`
         timestamp: new Date(),
       }
       setMessages((prev) => [...prev, errorMessage])
+      
+      // Clear token tracking on error
+      if (tokenUpdateIntervalRef.current) {
+        clearInterval(tokenUpdateIntervalRef.current)
+        tokenUpdateIntervalRef.current = null
+      }
+      streamStartTimeRef.current = null
+      setTokensPerSecond(0)
+      totalTokensStreamedRef.current = 0
     } finally {
       setLoading(false)
     }
   }
+
+  // Cleanup interval on unmount
+  useEffect(() => {
+    return () => {
+      if (tokenUpdateIntervalRef.current) {
+        clearInterval(tokenUpdateIntervalRef.current)
+      }
+    }
+  }, [])
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -261,6 +354,29 @@ ${context}`
 
   return (
     <div className="h-screen flex flex-col bg-background">
+      {/* Security Banner */}
+      <div className="border-b border-text/10 bg-background-alt flex-shrink-0">
+        <div className="px-6 py-2">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-2 text-xs text-text/70">
+              <span className="text-base">🇺🇸</span>
+              <span className="font-medium">All traffic kept in United States</span>
+            </div>
+            <div className="flex items-center gap-4 text-xs">
+              {tokensPerSecond > 0 && (
+                <div className="flex items-center gap-1.5 text-text/70">
+                  <span className="font-medium">~{tokensPerSecond} tokens/s</span>
+                </div>
+              )}
+              <div className="flex items-center gap-1.5 text-text/60">
+                <Info className="w-3.5 h-3.5" />
+                <span>Chats auto-delete when navigating away</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Header */}
       <header className="border-b border-text/10 bg-background-alt flex-shrink-0">
         <div className="px-6 py-4">

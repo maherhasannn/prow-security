@@ -26,15 +26,24 @@ export async function POST(request: Request) {
     if (!expectedSecret) {
       console.error('MIGRATION_SECRET not configured in environment')
       return NextResponse.json(
-        { error: 'Migration endpoint not configured' },
+        { 
+          error: 'Migration endpoint not configured. Please set MIGRATION_SECRET in Vercel environment variables.',
+          instructions: '1. Go to Vercel Dashboard → Settings → Environment Variables\n2. Add MIGRATION_SECRET with a random value\n3. Redeploy or call this endpoint with the secret',
+        },
         { status: 503 }
       )
     }
 
     if (!providedSecret || providedSecret !== expectedSecret) {
-      console.warn('Unauthorized migration attempt')
+      console.warn('Unauthorized migration attempt', {
+        hasSecret: !!providedSecret,
+        timestamp: new Date().toISOString(),
+      })
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        { 
+          error: 'Unauthorized. MIGRATION_SECRET is required.',
+          hint: 'Include the secret in Authorization header (Bearer TOKEN), X-Migration-Secret header, or request body as {secret: "..."}',
+        },
         { status: 401 }
       )
     }
