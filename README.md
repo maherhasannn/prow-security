@@ -20,6 +20,18 @@ A production-grade frontend website for Prow, a secure AI service for enterprise
 
 - Node.js 18+ 
 - npm or yarn
+- Ollama Cloud API key (required for AI chat functionality)
+
+### Environment Variables
+
+Create a `.env.local` file in the root directory:
+
+```bash
+# Ollama Cloud API Key (required for AI chat)
+OLLAMA_API_KEY=your_ollama_api_key_here
+```
+
+Get your Ollama Cloud API key from [ollama.com](https://ollama.com).
 
 ### Installation
 

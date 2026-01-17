@@ -144,12 +144,26 @@ gcloud builds submit --config cloudbuild.yaml
 
 ## Step 5: Environment Variables
 
-If you need environment variables:
+### Required Environment Variables
+
+The application requires the following environment variable:
+
+- `OLLAMA_API_KEY` - Ollama Cloud API key for AI chat functionality
+
+Set environment variables in Cloud Run:
 
 ```bash
 gcloud run services update prow-frontend \
   --region us-central1 \
-  --set-env-vars "GCP_DEPLOY=true,OTHER_VAR=value"
+  --set-env-vars "OLLAMA_API_KEY=your_ollama_api_key_here,GCP_DEPLOY=true"
+```
+
+Or set additional variables:
+
+```bash
+gcloud run services update prow-frontend \
+  --region us-central1 \
+  --set-env-vars "OLLAMA_API_KEY=your_key,GCP_DEPLOY=true,OTHER_VAR=value"
 ```
 
 Or use a secrets manager for sensitive values:

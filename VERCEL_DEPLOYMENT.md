@@ -94,11 +94,18 @@ The `vercel.json` file is optional - Vercel auto-detects Next.js. But if you wan
 
 ## Environment Variables
 
-If you need env vars:
+### Required Environment Variables
+
+The application requires the following environment variable:
+
+- `OLLAMA_API_KEY` - Ollama Cloud API key for AI chat functionality
+
+To set environment variables:
 
 1. Go to project → "Settings" → "Environment Variables"
 2. Add variables:
-   - `NODE_ENV=production`
+   - `OLLAMA_API_KEY=your_ollama_api_key_here` (required)
+   - `NODE_ENV=production` (optional)
    - Any other vars you need
 3. Redeploy (or they auto-apply on next deploy)
 

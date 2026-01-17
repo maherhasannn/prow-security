@@ -3,11 +3,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { ArrowLeft, Send, Lock, Key } from 'lucide-react'
+import { ArrowLeft, Send, Lock } from 'lucide-react'
 import DocumentSidebar from './DocumentSidebar'
 import SessionTimer from './SessionTimer'
-import ApiKeyConfig from './ApiKeyConfig'
-// Removed direct GeminiProvider import - using API route instead
 
 interface Message {
   id: string
@@ -21,8 +19,6 @@ interface SecureChatInterfaceProps {
   workspaceName: string
 }
 
-const GEMINI_API_KEY_STORAGE_KEY = 'prow_gemini_api_key'
-
 export default function SecureChatInterface({
   workspaceId,
   workspaceName,
@@ -33,32 +29,26 @@ export default function SecureChatInterface({
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [selectedDocuments, setSelectedDocuments] = useState<string[]>([])
-  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false)
-  const [apiKey, setApiKey] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    // Check for API key
-    const storedKey = localStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)
-    if (storedKey) {
-      setApiKey(storedKey)
-    } else {
-      setIsApiKeyModalOpen(true)
-    }
-  }, [])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  const handleApiKeySave = (key: string) => {
-    localStorage.setItem(GEMINI_API_KEY_STORAGE_KEY, key)
-    setApiKey(key)
-    setIsApiKeyModalOpen(false)
+  // Normalize text formatting: clean up whitespace while preserving line breaks
+  const normalizeText = (text: string): string => {
+    if (!text) return text
+    
+    return text
+      .split('\n')                    // Split by line breaks
+      .map(line => line.trimEnd())    // Remove trailing spaces per line
+      .join('\n')                     // Rejoin with preserved line breaks
+      .replace(/[ \t]+/g, ' ')        // Normalize multiple spaces/tabs to single space
+      .trim()                         // Trim leading/trailing whitespace
   }
 
   const handleSend = async () => {
-    if (!input.trim() || loading || !apiKey) return
+    if (!input.trim() || loading) return
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -78,15 +68,27 @@ export default function SecureChatInterface({
         context = `Context: User has selected ${selectedDocuments.length} document(s) for reference.`
       }
 
-      // Use Gemini provider directly
+      // Use Ollama provider via API route
       const systemPrompt = `You are PROW, a secure AI assistant for analyzing sensitive business data. 
 You have access to documents uploaded by the user. Use this information to answer questions accurately and securely.
 Never expose sensitive information unnecessarily. Always cite which documents you are referencing.
 Keep responses professional, clear, and focused on business insights.
 ${context}`
 
-      // Call our API route instead of calling Gemini directly (avoids CORS issues)
-      const apiResponse = await fetch('/api/ai/chat', {
+      // Create placeholder assistant message for streaming
+      const assistantMessageId = (Date.now() + 1).toString()
+      const assistantMessage: Message = {
+        id: assistantMessageId,
+        role: 'assistant',
+        content: '',
+        timestamp: new Date(),
+      }
+
+      // Add placeholder message immediately
+      setMessages((prev) => [...prev, assistantMessage])
+
+      // Call our API route with streaming enabled (API key is handled server-side)
+      const apiResponse = await fetch('/api/ai/chat?stream=true', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -97,37 +99,133 @@ ${context}`
             ...messages.map((m) => ({ role: m.role, content: m.content })),
             { role: 'user', content: userMessage.content },
           ],
-          model: 'gemini-2.5-flash',
-          apiKey: apiKey,
+          model: 'gpt-oss:120b-cloud',
           workspaceId: workspaceId,
+          stream: true,
         }),
       })
 
       if (!apiResponse.ok) {
+        // Remove placeholder message on error
+        setMessages((prev) => prev.filter((msg) => msg.id !== assistantMessageId))
         const errorData = await apiResponse.json().catch(() => ({}))
         throw new Error(errorData.error || `API error: ${apiResponse.statusText}`)
       }
 
-      const data = await apiResponse.json()
+      // Handle streaming response
+      const reader = apiResponse.body?.getReader()
+      const decoder = new TextDecoder()
 
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: data.content,
-        timestamp: new Date(),
+      if (!reader) {
+        throw new Error('No response body')
       }
 
-      setMessages((prev) => [...prev, assistantMessage])
+      let buffer = ''
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split('\n')
+        buffer = lines.pop() || ''
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            try {
+              const data = JSON.parse(line.slice(6)) as {
+                chunk?: string
+                done?: boolean
+                error?: string
+              }
+
+              if (data.error) {
+                throw new Error(data.error)
+              }
+
+              if (data.chunk !== undefined) {
+                // Update message content incrementally
+                setMessages((prev) =>
+                  prev.map((msg) =>
+                    msg.id === assistantMessageId
+                      ? { ...msg, content: msg.content + (data.chunk || '') }
+                      : msg
+                  )
+                )
+              }
+
+              if (data.done) {
+                // Streaming complete - normalize text formatting
+                setMessages((prev) =>
+                  prev.map((msg) =>
+                    msg.id === assistantMessageId
+                      ? { ...msg, content: normalizeText(msg.content) }
+                      : msg
+                  )
+                )
+                break
+              }
+            } catch (parseError) {
+              // Skip invalid JSON lines
+              console.warn('Failed to parse streaming chunk:', line)
+            }
+          }
+        }
+      }
+
+      // Process remaining buffer
+      if (buffer.trim()) {
+        const lines = buffer.split('\n')
+        let isDone = false
+        
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            try {
+              const data = JSON.parse(line.slice(6)) as {
+                chunk?: string
+                done?: boolean
+              }
+
+              if (data.chunk !== undefined) {
+                setMessages((prev) =>
+                  prev.map((msg) =>
+                    msg.id === assistantMessageId
+                      ? { ...msg, content: msg.content + (data.chunk || '') }
+                      : msg
+                  )
+                )
+              }
+
+              if (data.done) {
+                isDone = true
+              }
+            } catch {
+              // Skip invalid JSON
+            }
+          }
+        }
+
+        // Normalize text if done was found in buffer
+        if (isDone) {
+          setMessages((prev) =>
+            prev.map((msg) =>
+              msg.id === assistantMessageId
+                ? { ...msg, content: normalizeText(msg.content) }
+                : msg
+            )
+          )
+        }
+      }
     } catch (error) {
       console.error('Error sending message:', error)
-      let errorContent = 'Sorry, I encountered an error. Please check your API key and try again.'
+      let errorContent = 'Sorry, I encountered an error. Please try again.'
       
       if (error instanceof Error) {
         const errorMsg = error.message.toLowerCase()
-        if (errorMsg.includes('api key') || errorMsg.includes('unauthorized')) {
-          errorContent = 'Invalid API key. Please configure your Gemini API key in settings.'
+        if (errorMsg.includes('api key') || errorMsg.includes('not configured')) {
+          errorContent = 'Ollama API key not configured. Please configure OLLAMA_API_KEY environment variable on the server.'
         } else if (errorMsg.includes('quota') || errorMsg.includes('limit')) {
-          errorContent = 'API quota exceeded. Please check your Gemini API usage limits.'
+          errorContent = 'API quota exceeded. Please check your Ollama API usage limits.'
         } else if (errorMsg.includes('network') || errorMsg.includes('fetch')) {
           errorContent = 'Network error. Please check your connection and try again.'
         } else {
@@ -186,13 +284,6 @@ ${context}`
                 <Lock className="w-3.5 h-3.5 text-accent" />
                 <span className="text-xs font-medium text-accent">Encrypted</span>
               </div>
-              <button
-                onClick={() => setIsApiKeyModalOpen(true)}
-                className="p-2 hover:bg-background rounded-sm transition-colors"
-                title="Configure API Key"
-              >
-                <Key className="w-5 h-5 text-text/60" />
-              </button>
             </div>
           </div>
         </div>
@@ -284,14 +375,14 @@ ${context}`
                   onKeyPress={handleKeyPress}
                   placeholder="Type your message..."
                   rows={1}
-                  disabled={loading || !apiKey}
+                  disabled={loading}
                   className="w-full px-4 py-3 bg-background border border-text/20 rounded-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{ minHeight: '48px', maxHeight: '200px' }}
                 />
               </div>
               <button
                 onClick={handleSend}
-                disabled={loading || !input.trim() || !apiKey}
+                disabled={loading || !input.trim()}
                 className="px-6 py-3 bg-text text-background font-medium rounded-sm hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 flex-shrink-0"
               >
                 <Send className="w-4 h-4" />
@@ -306,18 +397,6 @@ ${context}`
           </div>
         </div>
       </div>
-
-      {/* API Key Config Modal */}
-      <ApiKeyConfig
-        isOpen={isApiKeyModalOpen}
-        onClose={() => {
-          if (apiKey) {
-            setIsApiKeyModalOpen(false)
-          }
-        }}
-        onSave={handleApiKeySave}
-        currentApiKey={apiKey || undefined}
-      />
     </div>
   )
 }

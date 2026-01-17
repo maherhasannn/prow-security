@@ -77,12 +77,19 @@ Render will automatically use this file if present.
 
 ### Environment Variables
 
-If you need env vars later:
+#### Required Environment Variables
+
+The application requires the following environment variable:
+
+- `OLLAMA_API_KEY` - Ollama Cloud API key for AI chat functionality
+
+To set environment variables:
 
 1. Go to your service dashboard
 2. Click "Environment"
 3. Add variables:
-   - `NODE_ENV=production`
+   - `OLLAMA_API_KEY=your_ollama_api_key_here` (required)
+   - `NODE_ENV=production` (optional)
    - Any other vars you need
 
 ### Custom Domain

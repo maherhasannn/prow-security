@@ -30,8 +30,8 @@ export default function ApiKeyConfig({
       return
     }
 
-    // Basic validation - Gemini API keys typically start with AIza
-    if (!apiKey.startsWith('AIza') && apiKey.length < 30) {
+    // Basic validation - API keys should be at least 20 characters
+    if (apiKey.length < 20) {
       setError('Invalid API key format')
       return
     }
@@ -85,10 +85,10 @@ export default function ApiKeyConfig({
                     </div>
                     <div>
                       <h2 className="text-xl font-heading font-bold">
-                        Configure Gemini API Key
+                        Configure API Key
                       </h2>
                       <p className="text-sm text-text/60 mt-1">
-                        Enter your Google Gemini API key
+                        Enter your API key
                       </p>
                     </div>
                   </div>
@@ -130,7 +130,7 @@ export default function ApiKeyConfig({
                           htmlFor="api-key"
                           className="block text-sm font-medium text-text mb-2"
                         >
-                          Gemini API Key
+                          API Key
                         </label>
                         <div className="relative">
                           <input
@@ -141,7 +141,7 @@ export default function ApiKeyConfig({
                               setApiKey(e.target.value)
                               setError(null)
                             }}
-                            placeholder="AIza..."
+                            placeholder="Enter your API key"
                             className="w-full px-4 py-3 bg-background-alt border border-text/20 rounded-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all pr-12"
                           />
                           <button
@@ -153,23 +153,13 @@ export default function ApiKeyConfig({
                           </button>
                         </div>
                         <p className="text-xs text-text/50 mt-1.5">
-                          Get your API key from{' '}
-                          <a
-                            href="https://makersuite.google.com/app/apikey"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-accent hover:underline"
-                          >
-                            Google AI Studio
-                          </a>
+                          API key configuration
                         </p>
                       </div>
 
                       <div className="p-3 bg-background-alt border border-text/10 rounded-sm">
                         <p className="text-xs text-text/70">
-                          <strong>Note:</strong> Your API key is stored locally in your
-                          browser. It will not be shared with PROW servers. All API calls
-                          are made directly from your browser to Google&apos;s servers.
+                          <strong>Note:</strong> API key configuration
                         </p>
                       </div>
                     </div>
