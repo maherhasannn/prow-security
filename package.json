@@ -9,6 +9,7 @@
     "lint": "next lint",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:migrate:prod": "tsx scripts/migrate-production.ts",
     "db:studio": "drizzle-kit studio",
     "create-test-user": "tsx scripts/create-test-user.ts"
   },
@@ -16,7 +17,6 @@
     "@anthropic-ai/sdk": "^0.24.0",
     "@auth/core": "^0.37.0",
     "@vercel/blob": "^0.19.0",
-    "@vercel/postgres": "^0.10.0",
     "bcryptjs": "^2.4.3",
     "csv-parse": "^5.5.6",
     "drizzle-orm": "^0.33.0",
@@ -29,6 +29,7 @@
     "node-quickbooks": "^2.0.0",
     "openai": "^4.47.0",
     "pdf-parse": "^1.1.1",
+    "postgres": "^3.4.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "xlsx": "^0.18.5",

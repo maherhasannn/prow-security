@@ -95,10 +95,19 @@ export async function POST(request: Request) {
       { status: 201 }
     )
   } catch (error) {
-    console.error('Sign up error:', error)
-    
+    // Log detailed error information for debugging
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error occurred'
+    const errorStack = error instanceof Error ? error.stack : undefined
+    
+    console.error('Sign up error:', {
+      message: errorMessage,
+      stack: errorStack,
+      name: error instanceof Error ? error.name : undefined,
+      // Log the full error object if it has additional properties
+      error: error,
+      timestamp: new Date().toISOString(),
+    })
 
     // Handle database constraint errors
     if (errorMessage.includes('unique') || errorMessage.includes('duplicate')) {
@@ -108,8 +117,55 @@ export async function POST(request: Request) {
       )
     }
 
+    // Handle missing table errors (migration issue)
+    if (
+      errorMessage.includes('relation') && 
+      (errorMessage.includes('does not exist') || errorMessage.includes('not found'))
+    ) {
+      console.error(
+        'Database migration issue detected. Required tables are missing. ' +
+        'Please run migrations: npm run db:migrate:prod'
+      )
+      return NextResponse.json(
+        { 
+          error: 'Database configuration error. Please contact support.',
+          // In development, provide more details
+          ...(process.env.NODE_ENV === 'development' && {
+            details: 'Required database tables are missing. Run migrations to fix this.',
+          }),
+        },
+        { status: 500 }
+      )
+    }
+
+    // Handle connection errors
+    if (
+      errorMessage.includes('connection') ||
+      errorMessage.includes('connect') ||
+      errorMessage.includes('ECONNREFUSED') ||
+      errorMessage.includes('timeout')
+    ) {
+      console.error('Database connection error:', errorMessage)
+      return NextResponse.json(
+        { 
+          error: 'Database connection error. Please try again later.',
+          ...(process.env.NODE_ENV === 'development' && {
+            details: errorMessage,
+          }),
+        },
+        { status: 503 }
+      )
+    }
+
+    // Generic error response
     return NextResponse.json(
-      { error: 'Failed to create account. Please try again.' },
+      { 
+        error: 'Failed to create account. Please try again.',
+        // In development, provide error details for debugging
+        ...(process.env.NODE_ENV === 'development' && {
+          details: errorMessage,
+        }),
+      },
       { status: 500 }
     )
   }
