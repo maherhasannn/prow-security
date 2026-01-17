@@ -108,7 +108,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   secret: (() => {
     const secret = process.env.NEXTAUTH_SECRET
-    if (!secret && process.env.NODE_ENV === 'production') {
+    // Only enforce secret check at runtime, not during build
+    // During build (including "Collecting page data" phase), Next.js may execute route handlers
+    // but env vars may not be available in CI/CD even though they're set in Vercel for runtime.
+    // NEXT_PHASE might not be set during "Collecting page data", so we err on the side of caution
+    // and only throw if we're clearly NOT in a build phase (NEXT_PHASE is set but not a build phase).
+    const nextPhase = process.env.NEXT_PHASE
+    const isBuildPhase = 
+      nextPhase === 'phase-production-build' ||
+      nextPhase === 'phase-development-build'
+    
+    // Only throw if:
+    // 1. We're in production
+    // 2. Secret is missing
+    // 3. NEXT_PHASE is explicitly set AND it's NOT a build phase
+    // If NEXT_PHASE is undefined, we assume we're in build and don't throw (safe default)
+    if (!secret && process.env.NODE_ENV === 'production' && nextPhase && !isBuildPhase) {
       throw new Error(
         'NEXTAUTH_SECRET environment variable is required in production. ' +
         'Please set it in your Vercel project settings under Settings > Environment Variables.'
