@@ -1,20 +1,14 @@
 /** @type {import('next').NextConfig} */
 const isProd = process.env.NODE_ENV === 'production'
-const isGitHubPages = process.env.GITHUB_PAGES === 'true'
 const isGCP = process.env.GCP_DEPLOY === 'true'
 
 const nextConfig = {
   reactStrictMode: true,
-  // Use static export for GitHub Pages, standalone for GCP Cloud Run
-  ...(isGitHubPages && {
-    output: 'export',
-    basePath: '/prow-security',
-    assetPrefix: '/prow-security',
-  }),
-  // Enable standalone output for GCP Cloud Run
+  // Enable standalone output for GCP Cloud Run (good for dynamic backends)
   ...(isGCP && {
     output: 'standalone',
   }),
+  // Note: Removed GitHub Pages static export - using dynamic backend instead
   images: {
     unoptimized: true,
   },
