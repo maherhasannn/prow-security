@@ -202,3 +202,4 @@ For a marketing site, **free tier is perfect** to start!
 
 **That's it!** Render is much simpler than GCP - just connect GitHub and deploy. No Docker, no complex configs, no CLI setup needed.
 
+

@@ -38,3 +38,4 @@ export default async function WorkspaceChatPage({
   return <SecureChatInterface workspaceId={params.id} workspaceName={workspace.name} />
 }
 
+

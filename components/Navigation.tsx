@@ -43,6 +43,9 @@ export default function Navigation() {
             <Link href="/product" className="text-sm font-medium text-text hover:text-accent transition-colors">
               Product
             </Link>
+            <Link href="/about" className="text-sm font-medium text-text hover:text-accent transition-colors">
+              About
+            </Link>
             <Link href="/pricing" className="text-sm font-medium text-text hover:text-accent transition-colors">
               Pricing
             </Link>

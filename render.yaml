@@ -11,3 +11,4 @@ services:
     healthCheckPath: /
     autoDeploy: true
 
+

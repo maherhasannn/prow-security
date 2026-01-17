@@ -47,3 +47,4 @@ echo "🌐 Service URL: $SERVICE_URL"
 echo ""
 echo "To view logs: gcloud run services logs read prow-frontend --region $REGION --follow"
 
+

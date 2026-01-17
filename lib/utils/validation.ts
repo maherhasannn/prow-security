@@ -69,3 +69,4 @@ export const fetchQuickBooksDataSchema = z.object({
   endDate: z.string().datetime().optional(),
 })
 
+
