@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     // Call Gemini API
     const response = await provider.chat({
       messages,
-      model: model || 'gemini-1.5-flash',
+      model: model || 'gemini-2.5-flash',
     })
 
     return NextResponse.json({

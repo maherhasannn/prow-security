@@ -97,7 +97,7 @@ ${context}`
             ...messages.map((m) => ({ role: m.role, content: m.content })),
             { role: 'user', content: userMessage.content },
           ],
-          model: 'gemini-1.5-flash',
+          model: 'gemini-2.5-flash',
           apiKey: apiKey,
           workspaceId: workspaceId,
         }),

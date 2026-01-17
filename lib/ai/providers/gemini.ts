@@ -16,32 +16,38 @@ export class GeminiProvider implements AIProvider {
       throw new Error('Gemini API key not configured')
     }
 
-    const model = options.model || 'gemini-1.5-flash'
+    const model = options.model || 'gemini-2.5-flash'
 
-    // Convert messages to Gemini format
-    const contents = options.messages
-      .filter((msg) => msg.role !== 'system')
-      .map((msg) => ({
-        role: msg.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: msg.content }],
-      }))
-
-    // Add system instruction if present
+    // Separate system and non-system messages
     const systemMessage = options.messages.find((m) => m.role === 'system')
     const systemInstruction = systemMessage?.content
+    const nonSystemMessages = options.messages.filter((msg) => msg.role !== 'system')
+
+    // Convert messages to Gemini format
+    let contents = nonSystemMessages.map((msg) => ({
+      role: msg.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: msg.content }],
+    }))
+
+    // Insert system instruction as initial user message if present
+    // This is more compatible than using systemInstruction field (not supported in v1 for all models)
+    if (systemInstruction) {
+      // Always prepend system instruction as the first message
+      contents = [
+        {
+          role: 'user' as const,
+          parts: [{ text: systemInstruction }],
+        },
+        ...contents,
+      ]
+    }
 
     const requestBody: Record<string, unknown> = {
       contents,
     }
 
-    if (systemInstruction) {
-      requestBody.systemInstruction = {
-        parts: [{ text: systemInstruction }],
-      }
-    }
-
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${this.apiKey}`,
+      `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${this.apiKey}`,
       {
         method: 'POST',
         headers: {
@@ -94,30 +100,38 @@ export class GeminiProvider implements AIProvider {
       throw new Error('Gemini API key not configured')
     }
 
-    const model = options.model || 'gemini-1.5-flash'
+    const model = options.model || 'gemini-2.5-flash'
 
-    const contents = options.messages
-      .filter((msg) => msg.role !== 'system')
-      .map((msg) => ({
-        role: msg.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: msg.content }],
-      }))
-
+    // Separate system and non-system messages
     const systemMessage = options.messages.find((m) => m.role === 'system')
     const systemInstruction = systemMessage?.content
+    const nonSystemMessages = options.messages.filter((msg) => msg.role !== 'system')
+
+    // Convert messages to Gemini format
+    let contents = nonSystemMessages.map((msg) => ({
+      role: msg.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: msg.content }],
+    }))
+
+    // Insert system instruction as initial user message if present
+    // This is more compatible than using systemInstruction field (not supported in v1 for all models)
+    if (systemInstruction) {
+      // Always prepend system instruction as the first message
+      contents = [
+        {
+          role: 'user' as const,
+          parts: [{ text: systemInstruction }],
+        },
+        ...contents,
+      ]
+    }
 
     const requestBody: Record<string, unknown> = {
       contents,
     }
 
-    if (systemInstruction) {
-      requestBody.systemInstruction = {
-        parts: [{ text: systemInstruction }],
-      }
-    }
-
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?key=${this.apiKey}`,
+      `https://generativelanguage.googleapis.com/v1/models/${model}:streamGenerateContent?key=${this.apiKey}`,
       {
         method: 'POST',
         headers: {
@@ -193,7 +207,7 @@ export class GeminiProvider implements AIProvider {
   }
 
   getModels(): string[] {
-    return ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro']
+    return ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.5-flash-lite', 'gemini-1.5-pro', 'gemini-pro']
   }
 }
 
