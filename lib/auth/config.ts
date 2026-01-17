@@ -106,7 +106,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: (() => {
+    const secret = process.env.NEXTAUTH_SECRET
+    if (!secret && process.env.NODE_ENV === 'production') {
+      throw new Error(
+        'NEXTAUTH_SECRET environment variable is required in production. ' +
+        'Please set it in your Vercel project settings under Settings > Environment Variables.'
+      )
+    }
+    return secret || 'dev-secret-change-in-production'
+  })(),
   debug: process.env.NODE_ENV === 'development',
 })
 

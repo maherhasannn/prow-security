@@ -1,57 +1,62 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { signIn } from 'next-auth/react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 
-export default function SignInPage() {
+export default function SignUpPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    if (searchParams.get('registered') === 'true') {
-      setSuccess('Account created successfully! Please sign in.')
-    }
-  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setLoading(true)
 
+    // Validation
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long')
+      setLoading(false)
+      return
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match')
+      setLoading(false)
+      return
+    }
+
     try {
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
       })
 
-      if (result?.error) {
-        setError('Invalid email or password')
+      const data = await response.json()
+
+      if (!response.ok) {
+        setError(data.error || 'Sign up failed. Please try again.')
         setLoading(false)
         return
       }
 
-      // Check if sign-in was successful
-      if (result?.ok || result?.url) {
-        // Use full page reload to ensure session is properly established
-        // This ensures cookies are set and session is available
-        window.location.href = '/app'
-      } else {
-        // If result is not ok and no error, something went wrong
-        console.error('Sign in result:', result)
-        setError('Sign in failed. Please try again.')
-        setLoading(false)
-      }
+      // Sign up successful - redirect to sign in
+      router.push('/auth/signin?registered=true')
     } catch (err) {
-      console.error('Sign in error:', err)
+      console.error('Sign up error:', err)
       setError('An error occurred. Please try again.')
       setLoading(false)
     }
@@ -69,7 +74,7 @@ export default function SignInPage() {
           <Link href="/">
             <h1 className="text-4xl font-heading font-bold mb-2">PROW</h1>
           </Link>
-          <p className="text-text/70">Sign in to your secure AI workspace</p>
+          <p className="text-text/70">Create your secure AI workspace</p>
         </div>
 
         <motion.div
@@ -79,16 +84,26 @@ export default function SignInPage() {
           className="bg-background-alt border border-text/10 rounded-sm p-8"
         >
           <form onSubmit={handleSubmit} className="space-y-6">
-            {success && (
-              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-sm text-sm">
-                {success}
-              </div>
-            )}
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-sm text-sm">
                 {error}
               </div>
             )}
+
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-text mb-2">
+                Full Name
+              </label>
+              <input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="w-full px-4 py-3 bg-background border border-text/20 rounded-sm text-text focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
+                placeholder="John Doe"
+              />
+            </div>
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-text mb-2">
@@ -115,6 +130,24 @@ export default function SignInPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                minLength={8}
+                className="w-full px-4 py-3 bg-background border border-text/20 rounded-sm text-text focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
+                placeholder="••••••••"
+              />
+              <p className="text-xs text-text/50 mt-1">Must be at least 8 characters</p>
+            </div>
+
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-text mb-2">
+                Confirm Password
+              </label>
+              <input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                minLength={8}
                 className="w-full px-4 py-3 bg-background border border-text/20 rounded-sm text-text focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
                 placeholder="••••••••"
               />
@@ -127,15 +160,15 @@ export default function SignInPage() {
               whileTap={{ scale: loading ? 1 : 0.98 }}
               className="w-full px-6 py-3 bg-text text-background font-medium rounded-sm hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Signing in...' : 'Sign In'}
+              {loading ? 'Creating account...' : 'Sign Up'}
             </motion.button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-text/60">
-              Don&apos;t have an account?{' '}
-              <Link href="/auth/signup" className="text-accent hover:underline">
-                Sign up
+              Already have an account?{' '}
+              <Link href="/auth/signin" className="text-accent hover:underline">
+                Sign in
               </Link>
             </p>
           </div>
