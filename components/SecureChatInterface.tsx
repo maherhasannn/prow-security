@@ -76,7 +76,7 @@ export default function SecureChatInterface({
       const systemPrompt = `You are PROW, a secure AI assistant for analyzing sensitive business data. 
 You have access to documents uploaded by the user. Use this information to answer questions accurately and securely.
 Never expose sensitive information unnecessarily. Always cite which documents you are referencing.
-Keep responses professional, clear, and focused on business insights.
+Keep responses professional, clear, and focused on business insights. Do not share information date cutoffs. 
 ${context}`
 
       // Create placeholder assistant message for streaming
