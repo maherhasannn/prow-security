@@ -28,11 +28,22 @@ export default function SignInPage() {
       if (result?.error) {
         setError('Invalid email or password')
         setLoading(false)
+        return
+      }
+
+      // Check if sign-in was successful
+      if (result?.ok || result?.url) {
+        // Use full page reload to ensure session is properly established
+        // This ensures cookies are set and session is available
+        window.location.href = '/app'
       } else {
-        router.push('/app')
-        router.refresh()
+        // If result is not ok and no error, something went wrong
+        console.error('Sign in result:', result)
+        setError('Sign in failed. Please try again.')
+        setLoading(false)
       }
     } catch (err) {
+      console.error('Sign in error:', err)
       setError('An error occurred. Please try again.')
       setLoading(false)
     }
