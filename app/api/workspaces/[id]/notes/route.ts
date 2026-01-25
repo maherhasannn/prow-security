@@ -92,7 +92,7 @@ export async function POST(
       .values({
         workspaceId: params.id,
         content: validated.content,
-        type: 'user-added',
+        type: 'user-added' as const,
       })
       .returning({
         id: workspaceNotes.id,

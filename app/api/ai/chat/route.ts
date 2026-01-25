@@ -71,7 +71,7 @@ export async function POST(request: Request) {
           notes.map((note) => ({
             workspaceId,
             content: note,
-            type: 'ai-generated',
+            type: 'ai-generated' as const,
             metadata: {
               source: 'ai',
               model: resolvedModel,
