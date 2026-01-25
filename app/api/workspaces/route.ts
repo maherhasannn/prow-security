@@ -60,6 +60,7 @@ export async function POST(request: NextRequest) {
         organizationId: validated.organizationId,
         name: validated.name,
         description: validated.description,
+        mode: validated.mode ?? 'secure',
         createdBy: session.user.id,
       })
       .returning()
@@ -82,5 +83,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: message }, { status: statusCode })
   }
 }
+
 
 

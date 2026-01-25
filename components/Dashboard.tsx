@@ -12,6 +12,7 @@ interface Workspace {
   id: string
   name: string
   description: string | null
+  mode: 'secure' | 'internet-enabled'
   createdAt: Date
 }
 
@@ -144,9 +145,22 @@ export default function Dashboard() {
                   router.push(`/app/workspaces/${workspace.id}`)
                 }}
               >
-                <h3 className="text-lg font-heading font-semibold mb-2">
-                  {workspace.name}
-                </h3>
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <h3 className="text-lg font-heading font-semibold">
+                    {workspace.name}
+                  </h3>
+                  <span
+                    className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded-sm border ${
+                      workspace.mode === 'internet-enabled'
+                        ? 'bg-amber-50/70 border-amber-200 text-amber-700'
+                        : 'bg-background border-text/10 text-text/60'
+                    }`}
+                  >
+                    {workspace.mode === 'internet-enabled'
+                      ? 'Internet'
+                      : 'Secure'}
+                  </span>
+                </div>
                 {workspace.description && (
                   <p className="text-sm text-text/70 mb-4 line-clamp-2">
                     {workspace.description}

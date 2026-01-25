@@ -9,6 +9,7 @@ export interface AIChatOptions {
   temperature?: number
   maxTokens?: number
   stream?: boolean
+  enableGrounding?: boolean
 }
 
 export interface AIChatResponse {

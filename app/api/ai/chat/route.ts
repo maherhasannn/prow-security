@@ -1,6 +1,12 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth/config'
+import { db } from '@/lib/db'
+import { workspaces, workspaceNotes } from '@/lib/db/schema'
+import { and, eq } from 'drizzle-orm'
+import { getUserOrganizationId } from '@/lib/auth/middleware'
 import { OllamaProvider } from '@/lib/ai/providers/ollama'
+import { GeminiProvider } from '@/lib/ai/providers/gemini'
+import { generateWorkspaceNotes } from '@/lib/ai/note-generation'
 
 export async function POST(request: Request) {
   try {
@@ -28,8 +34,54 @@ export async function POST(request: Request) {
       )
     }
 
-    // Initialize Ollama provider with server-side API key from environment
-    const provider = new OllamaProvider()
+    if (!workspaceId) {
+      return NextResponse.json(
+        { error: 'workspaceId is required' },
+        { status: 400 }
+      )
+    }
+
+    const organizationId = await getUserOrganizationId()
+    const [workspace] = await db
+      .select()
+      .from(workspaces)
+      .where(
+        and(
+          eq(workspaces.id, workspaceId),
+          eq(workspaces.organizationId, organizationId)
+        )
+      )
+      .limit(1)
+
+    if (!workspace) {
+      return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })
+    }
+
+    const isInternetEnabled = workspace.mode === 'internet-enabled'
+    const provider = isInternetEnabled ? new GeminiProvider() : new OllamaProvider()
+    const defaultModel = isInternetEnabled ? 'gemini-2.5-flash' : 'gpt-oss:120b-cloud'
+    const resolvedModel = model || defaultModel
+
+    const persistNotes = async (content: string) => {
+      try {
+        const notes = generateWorkspaceNotes(content)
+        if (notes.length === 0) return
+
+        await db.insert(workspaceNotes).values(
+          notes.map((note) => ({
+            workspaceId,
+            content: note,
+            type: 'ai-generated',
+            metadata: {
+              source: 'ai',
+              model: resolvedModel,
+            },
+          }))
+        )
+      } catch (noteError) {
+        console.warn('Failed to persist AI notes:', noteError)
+      }
+    }
 
     // Handle streaming response
     if (isStreaming) {
@@ -39,11 +91,12 @@ export async function POST(request: Request) {
       const stream = new ReadableStream({
         async start(controller) {
           try {
-            await provider.chatStream(
+            const response = await provider.chatStream(
               {
                 messages,
-                model: model || 'gpt-oss:120b-cloud',
+                model: resolvedModel,
                 stream: true,
+                enableGrounding: isInternetEnabled,
               },
               (chunk: string) => {
                 // Send chunk as JSON
@@ -51,6 +104,8 @@ export async function POST(request: Request) {
                 controller.enqueue(encoder.encode(`data: ${data}\n\n`))
               }
             )
+
+            await persistNotes(response.content)
             
             // Send final chunk with done: true
             const finalData = JSON.stringify({ chunk: '', done: true })
@@ -83,8 +138,11 @@ export async function POST(request: Request) {
     // Non-streaming response (existing behavior)
     const response = await provider.chat({
       messages,
-      model: model || 'gpt-oss:120b-cloud',
+      model: resolvedModel,
+      enableGrounding: isInternetEnabled,
     })
+
+    await persistNotes(response.content)
 
     return NextResponse.json({
       content: response.content,
@@ -97,7 +155,14 @@ export async function POST(request: Request) {
       error instanceof Error ? error.message : 'Unknown error occurred'
     
     // Provide more specific error messages
-    if (errorMessage.includes('API key') || errorMessage.includes('not configured')) {
+    if (errorMessage.includes('Gemini API key')) {
+      return NextResponse.json(
+        { error: 'Gemini API key not configured. Please configure GEMINI_API_KEY environment variable.' },
+        { status: 500 }
+      )
+    }
+
+    if (errorMessage.includes('Ollama API key') || errorMessage.includes('not configured')) {
       return NextResponse.json(
         { error: 'Ollama API key not configured. Please configure OLLAMA_API_KEY environment variable.' },
         { status: 500 }

@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { ArrowLeft, Send, Lock, Info } from 'lucide-react'
+import { ArrowLeft, Send, Lock, Info, Globe } from 'lucide-react'
 import DocumentSidebar from './DocumentSidebar'
+import NotesSidebar from './NotesSidebar'
 import SessionTimer from './SessionTimer'
 
 interface Message {
@@ -17,11 +18,13 @@ interface Message {
 interface SecureChatInterfaceProps {
   workspaceId: string
   workspaceName: string
+  workspaceMode: 'secure' | 'internet-enabled'
 }
 
 export default function SecureChatInterface({
   workspaceId,
   workspaceName,
+  workspaceMode,
 }: SecureChatInterfaceProps) {
   const router = useRouter()
   const { data: session } = useSession()
@@ -73,10 +76,13 @@ export default function SecureChatInterface({
       }
 
       // Use Ollama provider via API route
-      const systemPrompt = `You are PROW, a secure AI assistant for analyzing sensitive business data. 
+      const systemPrompt = `You are PROW, a secure AI assistant for analyzing sensitive business data.
 You have access to documents uploaded by the user. Use this information to answer questions accurately and securely.
 Never expose sensitive information unnecessarily. Always cite which documents you are referencing.
 Keep responses professional, clear, and focused on business insights. Do not share information date cutoffs. 
+${workspaceMode === 'internet-enabled'
+  ? 'You can access the public internet using Google Search grounding. When you use web sources, cite the sources clearly.'
+  : 'You do not have internet access. Do not claim to browse or search the web.'}
 ${context}`
 
       // Create placeholder assistant message for streaming
@@ -400,6 +406,22 @@ ${context}`
                 <Lock className="w-3.5 h-3.5 text-accent" />
                 <span className="text-xs font-medium text-accent">Encrypted</span>
               </div>
+              <div
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-sm border ${
+                  workspaceMode === 'internet-enabled'
+                    ? 'bg-amber-50/70 border-amber-200 text-amber-700'
+                    : 'bg-background border-text/20 text-text/60'
+                }`}
+              >
+                {workspaceMode === 'internet-enabled' ? (
+                  <Globe className="w-3.5 h-3.5" />
+                ) : (
+                  <Lock className="w-3.5 h-3.5" />
+                )}
+                <span className="text-xs font-medium">
+                  {workspaceMode === 'internet-enabled' ? 'Internet-Enabled' : 'Secure Lockdown'}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -407,19 +429,9 @@ ${context}`
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Document Sidebar */}
-        <div className="w-64 flex-shrink-0">
-          <DocumentSidebar
-            workspaceId={workspaceId}
-            selectedDocuments={selectedDocuments}
-            onSelectDocument={(docId) => {
-              setSelectedDocuments((prev) =>
-                prev.includes(docId)
-                  ? prev.filter((id) => id !== docId)
-                  : [...prev, docId]
-              )
-            }}
-          />
+        {/* Notes Sidebar */}
+        <div className="w-80 flex-shrink-0">
+          <NotesSidebar workspaceId={workspaceId} />
         </div>
 
         {/* Chat Area */}
@@ -511,6 +523,21 @@ ${context}`
               </div>
             )}
           </div>
+        </div>
+
+        {/* Document Sidebar */}
+        <div className="w-64 flex-shrink-0">
+          <DocumentSidebar
+            workspaceId={workspaceId}
+            selectedDocuments={selectedDocuments}
+            onSelectDocument={(docId) => {
+              setSelectedDocuments((prev) =>
+                prev.includes(docId)
+                  ? prev.filter((id) => id !== docId)
+                  : [...prev, docId]
+              )
+            }}
+          />
         </div>
       </div>
     </div>

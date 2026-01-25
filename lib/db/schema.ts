@@ -6,6 +6,8 @@ export const organizationMemberRoleEnum = pgEnum('organization_member_role', ['o
 export const documentTypeEnum = pgEnum('document_type', ['excel', 'csv', 'pdf', 'quickbooks'])
 export const aiSessionStatusEnum = pgEnum('ai_session_status', ['active', 'completed', 'archived'])
 export const aiMessageRoleEnum = pgEnum('ai_message_role', ['user', 'assistant', 'system'])
+export const workspaceModeEnum = pgEnum('workspace_mode', ['secure', 'internet-enabled'])
+export const workspaceNoteTypeEnum = pgEnum('workspace_note_type', ['ai-generated', 'user-added'])
 
 // Organizations table
 export const organizations = pgTable('organizations', {
@@ -45,6 +47,7 @@ export const workspaces = pgTable('workspaces', {
   organizationId: uuid('organization_id').notNull().references(() => organizations.id, { onDelete: 'cascade' }),
   name: text('name').notNull(),
   description: text('description'),
+  mode: workspaceModeEnum('mode').default('secure').notNull(),
   createdBy: uuid('created_by').notNull().references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
@@ -112,6 +115,19 @@ export const aiMessages = pgTable('ai_messages', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
   sessionIdIdx: index('ai_messages_session_id_idx').on(table.sessionId),
+}))
+
+// Workspace notes table
+export const workspaceNotes = pgTable('workspace_notes', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  workspaceId: uuid('workspace_id').notNull().references(() => workspaces.id, { onDelete: 'cascade' }),
+  content: text('content').notNull(),
+  type: workspaceNoteTypeEnum('type').notNull(),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  workspaceIdIdx: index('workspace_notes_workspace_id_idx').on(table.workspaceId),
 }))
 
 // Audit logs table
@@ -186,6 +202,7 @@ export const workspacesRelations = relations(workspaces, ({ one, many }) => ({
   }),
   documents: many(documents),
   aiSessions: many(aiSessions),
+  notes: many(workspaceNotes),
   quickbooksConnections: many(quickbooksConnections),
 }))
 
@@ -231,6 +248,13 @@ export const aiMessagesRelations = relations(aiMessages, ({ one }) => ({
   }),
 }))
 
+export const workspaceNotesRelations = relations(workspaceNotes, ({ one }) => ({
+  workspace: one(workspaces, {
+    fields: [workspaceNotes.workspaceId],
+    references: [workspaces.id],
+  }),
+}))
+
 export const auditLogsRelations = relations(auditLogs, ({ one }) => ({
   organization: one(organizations, {
     fields: [auditLogs.organizationId],
@@ -252,5 +276,6 @@ export const quickbooksConnectionsRelations = relations(quickbooksConnections, (
     references: [workspaces.id],
   }),
 }))
+
 
 

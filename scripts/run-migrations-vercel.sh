@@ -28,3 +28,4 @@ echo ""
 echo "🧹 Cleaning up..."
 rm -f .env.local
 
+

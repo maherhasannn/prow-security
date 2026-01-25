@@ -4,7 +4,7 @@ export class GeminiProvider implements AIProvider {
   private apiKey: string | null = null
 
   constructor(apiKey?: string) {
-    this.apiKey = apiKey || null
+    this.apiKey = apiKey || process.env.GEMINI_API_KEY || null
   }
 
   setApiKey(apiKey: string) {
@@ -44,6 +44,10 @@ export class GeminiProvider implements AIProvider {
 
     const requestBody: Record<string, unknown> = {
       contents,
+    }
+
+    if (options.enableGrounding) {
+      requestBody.tools = [{ googleSearchRetrieval: {} }]
     }
 
     const response = await fetch(
@@ -128,6 +132,10 @@ export class GeminiProvider implements AIProvider {
 
     const requestBody: Record<string, unknown> = {
       contents,
+    }
+
+    if (options.enableGrounding) {
+      requestBody.tools = [{ googleSearchRetrieval: {} }]
     }
 
     const response = await fetch(

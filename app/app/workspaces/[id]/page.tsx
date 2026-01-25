@@ -35,7 +35,14 @@ export default async function WorkspaceChatPage({
     redirect('/app')
   }
 
-  return <SecureChatInterface workspaceId={params.id} workspaceName={workspace.name} />
+  return (
+    <SecureChatInterface
+      workspaceId={params.id}
+      workspaceName={workspace.name}
+      workspaceMode={workspace.mode}
+    />
+  )
 }
+
 
 

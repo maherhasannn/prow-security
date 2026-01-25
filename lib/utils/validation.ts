@@ -16,11 +16,21 @@ export const createWorkspaceSchema = z.object({
   name: z.string().min(1).max(255),
   description: z.string().max(1000).optional(),
   organizationId: z.string().uuid(),
+  mode: z.enum(['secure', 'internet-enabled']).optional(),
 })
 
 export const updateWorkspaceSchema = z.object({
   name: z.string().min(1).max(255).optional(),
   description: z.string().max(1000).optional(),
+})
+
+// Workspace notes schemas
+export const createWorkspaceNoteSchema = z.object({
+  content: z.string().min(1).max(5000),
+})
+
+export const updateWorkspaceNoteSchema = z.object({
+  content: z.string().min(1).max(5000),
 })
 
 // Document schemas
@@ -68,5 +78,6 @@ export const fetchQuickBooksDataSchema = z.object({
   startDate: z.string().datetime().optional(),
   endDate: z.string().datetime().optional(),
 })
+
 
 

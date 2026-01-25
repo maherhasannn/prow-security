@@ -46,6 +46,7 @@ export default function CreateWorkspaceModal({
 }: CreateWorkspaceModalProps) {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
+  const [mode, setMode] = useState<'secure' | 'internet-enabled'>('secure')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
@@ -80,6 +81,7 @@ export default function CreateWorkspaceModal({
         body: JSON.stringify({
           name: name.trim(),
           description: description.trim() || undefined,
+          mode,
         }),
       })
 
@@ -94,6 +96,7 @@ export default function CreateWorkspaceModal({
         setSuccess(false)
         setName('')
         setDescription('')
+        setMode('secure')
         setError(null)
         onSuccess()
         onClose()
@@ -113,6 +116,7 @@ export default function CreateWorkspaceModal({
     if (!loading) {
       setName('')
       setDescription('')
+      setMode('secure')
       setError(null)
       setSuccess(false)
       onClose()
@@ -161,10 +165,14 @@ export default function CreateWorkspaceModal({
                     </motion.div>
                     <div>
                       <h2 className="text-2xl font-heading font-bold">
-                        Create Secure Workspace
+                        {mode === 'secure'
+                          ? 'Create Secure Workspace'
+                          : 'Create Internet-Enabled Workspace'}
                       </h2>
                       <p className="text-sm text-text/60 mt-1">
-                        Medical-grade security foundation
+                        {mode === 'secure'
+                          ? 'Medical-grade security foundation'
+                          : 'Secure workspace with live web context'}
                       </p>
                     </div>
                   </div>
@@ -181,7 +189,7 @@ export default function CreateWorkspaceModal({
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-accent/5 border border-accent/20 rounded-sm w-fit">
                   <Shield className="w-4 h-4 text-accent" />
                   <span className="text-xs font-heading font-semibold text-accent uppercase tracking-wider">
-                    Secure by Default
+                    {mode === 'secure' ? 'Secure by Default' : 'Internet-Enabled Mode'}
                   </span>
                 </div>
               </div>
@@ -301,7 +309,7 @@ export default function CreateWorkspaceModal({
                             setDescription(e.target.value)
                             setError(null)
                           }}
-                          placeholder="Describe the purpose of this secure workspace..."
+                          placeholder="Describe the purpose of this workspace..."
                           maxLength={1000}
                           rows={3}
                           disabled={loading}
@@ -311,6 +319,72 @@ export default function CreateWorkspaceModal({
                           {description.length}/1000 characters
                         </p>
                       </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-text mb-3">
+                          Workspace Mode <span className="text-red-500">*</span>
+                        </label>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <button
+                            type="button"
+                            onClick={() => setMode('secure')}
+                            className={`p-4 border rounded-sm text-left transition-all ${
+                              mode === 'secure'
+                                ? 'border-accent/40 bg-accent/5 shadow-sm'
+                                : 'border-text/10 bg-background-alt hover:border-text/20'
+                            }`}
+                          >
+                            <div className="flex items-start gap-3">
+                              <Lock className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                              <div>
+                                <div className="text-sm font-semibold text-text">Secure Lockdown</div>
+                                <div className="text-xs text-text/60 mt-1">
+                                  No internet access. Strict isolation for sensitive data.
+                                </div>
+                              </div>
+                            </div>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setMode('internet-enabled')}
+                            className={`p-4 border rounded-sm text-left transition-all ${
+                              mode === 'internet-enabled'
+                                ? 'border-amber-400/50 bg-amber-50/60 shadow-sm'
+                                : 'border-text/10 bg-background-alt hover:border-text/20'
+                            }`}
+                          >
+                            <div className="flex items-start gap-3">
+                              <Eye className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                              <div>
+                                <div className="text-sm font-semibold text-text">Internet-Enabled</div>
+                                <div className="text-xs text-text/60 mt-1">
+                                  Uses Google Search grounding for live web context.
+                                </div>
+                              </div>
+                            </div>
+                          </button>
+                        </div>
+                        <p className="text-xs text-text/50 mt-2">
+                          Mode is permanent for this workspace and cannot be changed later.
+                        </p>
+                      </div>
+
+                      {mode === 'internet-enabled' && (
+                        <div className="p-4 bg-amber-50/70 border border-amber-200 rounded-sm">
+                          <div className="flex items-start gap-3">
+                            <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                            <div className="flex-1">
+                              <div className="text-sm font-medium text-amber-900 mb-1">
+                                Internet Access Disclaimer
+                              </div>
+                              <p className="text-xs text-amber-800 leading-relaxed">
+                                This mode enables Google Search grounding so the AI can read the internet.
+                                It may increase exposure risk. Use only for non-sensitive workflows.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
 
                       {/* Security Notice */}
                       <div className="p-4 bg-background-alt border border-accent/20 rounded-sm">
@@ -355,12 +429,12 @@ export default function CreateWorkspaceModal({
                               transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                               className="w-4 h-4 border-2 border-background border-t-transparent rounded-full"
                             />
-                            Creating Securely...
+                            Creating Workspace...
                           </>
                         ) : (
                           <>
                             <Lock className="w-4 h-4" />
-                            Create Secure Workspace
+                            {mode === 'secure' ? 'Create Secure Workspace' : 'Create Internet Workspace'}
                           </>
                         )}
                       </motion.button>
