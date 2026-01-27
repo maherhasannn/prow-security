@@ -58,9 +58,13 @@ export async function POST(request: Request) {
     }
 
     const isInternetEnabled = workspace.mode === 'internet-enabled'
+    console.log(`[AI Chat] Workspace mode: ${workspace.mode}, isInternetEnabled: ${isInternetEnabled}`)
+
     const provider = isInternetEnabled ? new OpenAIProvider() : new OllamaProvider()
     const defaultModel = isInternetEnabled ? 'gpt-4o' : 'gpt-oss:120b-cloud'
     const resolvedModel = model || defaultModel
+
+    console.log(`[AI Chat] Using provider: ${isInternetEnabled ? 'OpenAI' : 'Ollama'}, model: ${resolvedModel}`)
 
     const persistNotes = async (content: string) => {
       try {
@@ -85,12 +89,14 @@ export async function POST(request: Request) {
 
     // Handle streaming response
     if (isStreaming) {
+      console.log('[AI Chat] Starting streaming response')
       const encoder = new TextEncoder()
-      
+
       // Create a ReadableStream for streaming response
       const stream = new ReadableStream({
         async start(controller) {
           try {
+            console.log('[AI Chat] Calling provider.chatStream')
             const response = await provider.chatStream(
               {
                 messages,
@@ -105,20 +111,27 @@ export async function POST(request: Request) {
               }
             )
 
+            console.log(`[AI Chat] Stream completed, content length: ${response.content.length}`)
+
             await persistNotes(response.content)
-            
+
             // Send final chunk with done: true
             const finalData = JSON.stringify({ chunk: '', done: true })
             controller.enqueue(encoder.encode(`data: ${finalData}\n\n`))
             controller.close()
           } catch (streamError) {
+            console.error('[AI Chat] Stream error:', streamError)
+
             const errorMessage =
               streamError instanceof Error ? streamError.message : 'Unknown error occurred'
-            
-            // Send error in stream format
-            const errorData = JSON.stringify({ 
+
+            // Send error in stream format so the client sees it
+            const errorChunk = JSON.stringify({ chunk: `\n\n**Error:** ${errorMessage}`, done: false })
+            controller.enqueue(encoder.encode(`data: ${errorChunk}\n\n`))
+
+            const errorData = JSON.stringify({
               error: errorMessage,
-              done: true 
+              done: true
             })
             controller.enqueue(encoder.encode(`data: ${errorData}\n\n`))
             controller.close()
@@ -136,11 +149,14 @@ export async function POST(request: Request) {
     }
 
     // Non-streaming response (existing behavior)
+    console.log('[AI Chat] Starting non-streaming response')
     const response = await provider.chat({
       messages,
       model: resolvedModel,
       enableGrounding: isInternetEnabled,
     })
+
+    console.log(`[AI Chat] Response received, content length: ${response.content.length}`)
 
     await persistNotes(response.content)
 
@@ -149,13 +165,13 @@ export async function POST(request: Request) {
       usage: response.usage,
     })
   } catch (error) {
-    console.error('Error in AI chat API:', error)
-    
+    console.error('[AI Chat] Error in AI chat API:', error)
+
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error occurred'
-    
+
     // Provide more specific error messages
-    if (errorMessage.includes('OpenAI API key')) {
+    if (errorMessage.includes('OpenAI API key') || errorMessage.includes('OPENAI_API_KEY')) {
       return NextResponse.json(
         { error: 'OpenAI API key not configured. Please configure OPENAI_API_KEY environment variable.' },
         { status: 500 }
@@ -169,17 +185,24 @@ export async function POST(request: Request) {
       )
     }
 
-    if (errorMessage.includes('Ollama API key') || errorMessage.includes('not configured')) {
+    if (errorMessage.includes('Invalid OpenAI API key') || errorMessage.includes('401')) {
       return NextResponse.json(
-        { error: 'Ollama API key not configured. Please configure OLLAMA_API_KEY environment variable.' },
-        { status: 500 }
+        { error: 'Invalid OpenAI API key. Please check your OPENAI_API_KEY.' },
+        { status: 401 }
       )
     }
 
-    if (errorMessage.includes('quota') || errorMessage.includes('limit')) {
+    if (errorMessage.includes('rate limit') || errorMessage.includes('429')) {
       return NextResponse.json(
-        { error: 'API quota exceeded. Please check your Ollama API usage limits.' },
+        { error: 'API rate limit exceeded. Please try again later.' },
         { status: 429 }
+      )
+    }
+
+    if (errorMessage.includes('Ollama') || errorMessage.includes('OLLAMA')) {
+      return NextResponse.json(
+        { error: 'Ollama API error. Please check your OLLAMA_API_KEY environment variable.' },
+        { status: 500 }
       )
     }
 
@@ -189,4 +212,3 @@ export async function POST(request: Request) {
     )
   }
 }
-
