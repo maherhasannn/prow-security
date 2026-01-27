@@ -5,7 +5,7 @@ import { workspaces, workspaceNotes } from '@/lib/db/schema'
 import { and, eq } from 'drizzle-orm'
 import { getUserOrganizationId } from '@/lib/auth/middleware'
 import { OllamaProvider } from '@/lib/ai/providers/ollama'
-import { GeminiProvider } from '@/lib/ai/providers/gemini'
+import { OpenAIProvider } from '@/lib/ai/providers/openai'
 import { generateWorkspaceNotes } from '@/lib/ai/note-generation'
 
 export async function POST(request: Request) {
@@ -58,8 +58,8 @@ export async function POST(request: Request) {
     }
 
     const isInternetEnabled = workspace.mode === 'internet-enabled'
-    const provider = isInternetEnabled ? new GeminiProvider() : new OllamaProvider()
-    const defaultModel = isInternetEnabled ? 'gemini-2.5-flash' : 'gpt-oss:120b-cloud'
+    const provider = isInternetEnabled ? new OpenAIProvider() : new OllamaProvider()
+    const defaultModel = isInternetEnabled ? 'gpt-4o' : 'gpt-oss:120b-cloud'
     const resolvedModel = model || defaultModel
 
     const persistNotes = async (content: string) => {
@@ -155,9 +155,16 @@ export async function POST(request: Request) {
       error instanceof Error ? error.message : 'Unknown error occurred'
     
     // Provide more specific error messages
-    if (errorMessage.includes('Gemini API key')) {
+    if (errorMessage.includes('OpenAI API key')) {
       return NextResponse.json(
-        { error: 'Gemini API key not configured. Please configure GEMINI_API_KEY environment variable.' },
+        { error: 'OpenAI API key not configured. Please configure OPENAI_API_KEY environment variable.' },
+        { status: 500 }
+      )
+    }
+
+    if (errorMessage.includes('SERPER_API_KEY')) {
+      return NextResponse.json(
+        { error: 'Web search API key not configured. Please configure SERPER_API_KEY environment variable for internet-enabled workspaces.' },
         { status: 500 }
       )
     }
