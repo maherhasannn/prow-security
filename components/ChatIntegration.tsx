@@ -9,7 +9,7 @@ export default function ChatIntegration() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
-    <section id="data-inputs" className="py-32 px-6 md:px-12 bg-background">
+    <section id="data-inputs" className="py-32 px-6 md:px-12 bg-white">
       <div className="max-w-[var(--container-max-width)] mx-auto">
         <motion.div
           ref={ref}
@@ -32,13 +32,13 @@ export default function ChatIntegration() {
               visible: { y: 0, opacity: 1, transition: { duration: 0.6, ease: [0.25, 1, 0.5, 1] } },
             }}
           >
-            <span className="inline-block px-4 py-1.5 bg-background-alt text-xs font-heading font-semibold tracking-wider uppercase text-text/70 rounded-sm mb-6">
+            <span className="inline-block px-4 py-1.5 bg-[#0066CC]/10 text-xs font-heading font-semibold tracking-wider uppercase text-[#0066CC] rounded-full border border-[#0066CC]/20 mb-6">
               Secure Data Inputs
             </span>
-            <h2 className="text-4xl md:text-6xl font-heading font-bold mb-6 text-balance">
+            <h2 className="text-4xl md:text-6xl font-heading font-bold mb-6 text-balance text-[#1e3a5f]">
               Bring Your Data Into a Private AI Workspace
             </h2>
-            <p className="text-xl text-text/70 max-w-2xl mx-auto">
+            <p className="text-xl text-[#5A6470] max-w-2xl mx-auto">
               Start with Excel/CSV, PDFs, and QuickBooks. Ask questions across files and surface insights
               without exporting or exposing sensitive data.
             </p>
@@ -58,15 +58,15 @@ export default function ChatIntegration() {
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
-          className="mt-16 flex flex-wrap justify-center gap-8"
+          className="mt-16 flex flex-wrap justify-center gap-4"
         >
           {['Excel/CSV', 'PDFs', 'QuickBooks (read-only)'].map((platform, i) => (
             <motion.div
               key={platform}
               whileHover={{ scale: 1.05, y: -2 }}
-              className="px-6 py-3 bg-background-alt border border-text/10 rounded-sm hover:border-text/20 transition-colors"
+              className="px-6 py-3 bg-[#0066CC]/5 border border-[#0066CC]/20 rounded-full hover:border-[#0066CC]/40 hover:bg-[#0066CC]/10 transition-all cursor-default"
             >
-              <span className="text-sm font-medium">{platform}</span>
+              <span className="text-sm font-medium text-[#1e3a5f]">{platform}</span>
             </motion.div>
           ))}
         </motion.div>
@@ -77,23 +77,25 @@ export default function ChatIntegration() {
 
 function ChatInterface() {
   return (
-    <div className="bg-background-alt rounded-sm border border-text/10 overflow-hidden">
+    <div className="bg-white rounded-sm border border-[#0066CC]/10 overflow-hidden shadow-xl shadow-[#0066CC]/5">
       {/* Mock Chat Interface */}
-      <div className="p-6 border-b border-text/10 bg-background">
+      <div className="p-6 border-b border-[#0066CC]/10 bg-gradient-to-r from-[#0066CC]/5 to-transparent">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-text/10" />
+          <div className="w-10 h-10 rounded-full bg-[#0066CC]/20 flex items-center justify-center">
+            <span className="text-[#0066CC] font-heading font-bold text-sm">P</span>
+          </div>
           <div>
-            <div className="h-4 w-32 bg-text/20 rounded mb-2" />
-            <div className="h-3 w-24 bg-text/10 rounded" />
+            <div className="font-heading font-semibold text-[#1e3a5f]">PROW Workspace</div>
+            <div className="text-xs text-[#5A6470]">Secure AI Session</div>
           </div>
         </div>
       </div>
 
       <div className="flex">
         {/* Chat Messages Area */}
-        <div className="flex-1 p-6 space-y-4 min-w-0">
+        <div className="flex-1 p-6 space-y-4 min-w-0 bg-[#fafbfc]">
           {[
-            { text: 'What were last quarter’s largest expense categories from QuickBooks?', side: 'right' },
+            { text: "What were last quarter's largest expense categories from QuickBooks?", side: 'right' },
             { text: 'From your QuickBooks reports, the top categories were payroll, vendor services, and cloud infrastructure. I can break down totals by month if helpful.', side: 'left', isProw: true },
             { text: 'Summarize the key risks noted in the Q4 board memo PDF.', side: 'right' },
           ].map((msg, i) => (
@@ -107,14 +109,14 @@ function ChatInterface() {
               <div
                 className={`max-w-[85%] p-4 rounded-sm ${
                   msg.side === 'right'
-                    ? 'bg-text/5 text-text'
+                    ? 'bg-white text-[#1e3a5f] border border-[#0066CC]/10'
                     : msg.isProw
-                    ? 'bg-accent/10 text-text border-l-2 border-accent'
-                    : 'bg-background text-text'
+                    ? 'bg-[#0066CC]/10 text-[#1e3a5f] border-l-2 border-[#0066CC]'
+                    : 'bg-white text-[#1e3a5f]'
                 }`}
               >
                 {msg.isProw && (
-                  <div className="text-xs font-heading font-semibold text-accent mb-1 uppercase tracking-wider">
+                  <div className="text-xs font-heading font-semibold text-[#0066CC] mb-1 uppercase tracking-wider">
                     Prow
                   </div>
                 )}
@@ -129,20 +131,20 @@ function ChatInterface() {
           initial={{ x: '100%', opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 1.5, duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
-          className="w-64 flex-shrink-0 bg-accent/5 border-l border-accent/20 p-4"
+          className="w-64 flex-shrink-0 bg-[#0066CC]/5 border-l border-[#0066CC]/20 p-4"
         >
           <div className="mb-6">
-            <div className="text-xs font-heading font-semibold text-accent uppercase tracking-wider mb-3">
+            <div className="text-xs font-heading font-semibold text-[#0066CC] uppercase tracking-wider mb-3">
               Context
             </div>
             <div className="space-y-2">
-              <div className="h-2 w-full bg-accent/20 rounded" />
-              <div className="h-2 w-3/4 bg-accent/20 rounded" />
-              <div className="h-2 w-5/6 bg-accent/20 rounded" />
+              <div className="h-2 w-full bg-[#0066CC]/20 rounded" />
+              <div className="h-2 w-3/4 bg-[#0066CC]/20 rounded" />
+              <div className="h-2 w-5/6 bg-[#0066CC]/20 rounded" />
             </div>
           </div>
           <div>
-            <div className="text-xs font-heading font-semibold text-accent uppercase tracking-wider mb-3">
+            <div className="text-xs font-heading font-semibold text-[#0066CC] uppercase tracking-wider mb-3">
               Sources
             </div>
             <div className="space-y-2">
@@ -152,7 +154,7 @@ function ChatInterface() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1.7 + i * 0.1 }}
-                  className="text-xs text-text/60 break-words"
+                  className="text-xs text-[#5A6470] break-words bg-white px-2 py-1 rounded border border-[#0066CC]/10"
                 >
                   {source}
                 </motion.div>
@@ -164,12 +166,3 @@ function ChatInterface() {
     </div>
   )
 }
-
-
-
-
-
-
-
-
-

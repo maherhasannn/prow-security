@@ -62,8 +62,8 @@ function AdministrativeAnimation() {
             ease: 'easeInOut',
           }}
         >
-          <div className="w-12 h-16 bg-background border border-text/10 rounded-sm shadow-sm flex items-center justify-center">
-            <FileText className="w-6 h-6 text-accent/40" />
+          <div className="w-12 h-16 bg-white border border-[#0066CC]/20 rounded-sm shadow-sm flex items-center justify-center">
+            <FileText className="w-6 h-6 text-[#0066CC]/40" />
           </div>
         </motion.div>
       ))}
@@ -72,7 +72,7 @@ function AdministrativeAnimation() {
         animate={{ scale: [1, 1.1, 1] }}
         transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
       >
-        <div className="w-20 h-20 border-2 border-accent/20 rounded-full" />
+        <div className="w-20 h-20 border-2 border-[#0066CC]/20 rounded-full" />
       </motion.div>
     </div>
   )
@@ -106,9 +106,9 @@ function PhysicalAnimation() {
               y1={startServer.y}
               x2={endServer.x}
               y2={endServer.y}
-              stroke="currentColor"
+              stroke="#0066CC"
               strokeWidth="0.3"
-              className="text-accent/20"
+              strokeOpacity="0.2"
               initial={{ pathLength: 0, opacity: 0 }}
               animate={{
                 pathLength: [0, 1, 1, 0],
@@ -133,8 +133,8 @@ function PhysicalAnimation() {
               cx={server.x}
               cy={server.y}
               r="4"
-              fill="currentColor"
-              className="text-accent/10"
+              fill="#0066CC"
+              fillOpacity="0.1"
               animate={{
                 r: [4, 8, 4],
                 opacity: [0.3, 0, 0.3],
@@ -164,16 +164,14 @@ function PhysicalAnimation() {
                 cx={server.x}
                 cy={server.y}
                 r="3"
-                fill="currentColor"
-                className="text-accent"
+                fill="#0066CC"
               />
               <rect
                 x={server.x - 2}
                 y={server.y - 3}
                 width="4"
                 height="6"
-                fill="currentColor"
-                className="text-accent"
+                fill="#0066CC"
                 opacity="0.8"
               />
             </motion.g>
@@ -194,7 +192,7 @@ function PhysicalAnimation() {
             ease: 'easeInOut',
           }}
         >
-          <Server className="w-16 h-16 text-accent/20" />
+          <Server className="w-16 h-16 text-[#0066CC]/20" />
         </motion.div>
       </div>
     </div>
@@ -213,7 +211,7 @@ function TechnicalAnimation() {
         animate={{ rotate: 360 }}
         transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
       >
-        <div className="w-32 h-32 border-2 border-accent/20 rounded-full" />
+        <div className="w-32 h-32 border-2 border-[#0066CC]/20 rounded-full" />
       </motion.div>
 
       {/* Pulsing middle ring */}
@@ -222,7 +220,7 @@ function TechnicalAnimation() {
         animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
         transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
       >
-        <div className="w-24 h-24 border-2 border-accent/30 rounded-full" />
+        <div className="w-24 h-24 border-2 border-[#0066CC]/30 rounded-full" />
       </motion.div>
 
       {/* Central shield */}
@@ -231,7 +229,7 @@ function TechnicalAnimation() {
         transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         className="relative z-10"
       >
-        <ShieldCheck className="w-16 h-16 text-accent" />
+        <ShieldCheck className="w-16 h-16 text-[#0066CC]" />
       </motion.div>
 
       {/* Orbiting particles */}
@@ -258,7 +256,7 @@ function TechnicalAnimation() {
             }}
           >
             <motion.div
-              className="w-2 h-2 bg-accent rounded-full"
+              className="w-2 h-2 bg-[#0066CC] rounded-full"
               style={{
                 transform: `translate(${radius}px, -50%)`,
               }}
@@ -286,9 +284,9 @@ function TechnicalAnimation() {
             y1="100"
             x2={100 + Math.cos((angle * Math.PI) / 180) * 50}
             y2={100 + Math.sin((angle * Math.PI) / 180) * 50}
-            stroke="currentColor"
+            stroke="#0066CC"
             strokeWidth="1"
-            className="text-accent/20"
+            strokeOpacity="0.2"
             initial={{ pathLength: 0, opacity: 0 }}
             animate={{
               pathLength: [0, 1, 0],
@@ -312,7 +310,7 @@ export default function SecurityLayer() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
-    <section id="security-layer" className="py-32 px-6 md:px-12 bg-background-alt">
+    <section id="security-layer" className="py-32 px-6 md:px-12 bg-gradient-to-b from-[#f0f4f8] to-white">
       <div className="max-w-[var(--container-max-width)] mx-auto">
         <motion.div
           ref={ref}
@@ -335,13 +333,13 @@ export default function SecurityLayer() {
             }}
             className="text-center mb-20"
           >
-            <span className="inline-block px-4 py-1.5 bg-background text-xs font-heading font-semibold tracking-wider uppercase text-text/70 rounded-sm mb-6">
+            <span className="inline-block px-4 py-1.5 bg-[#0066CC]/10 text-xs font-heading font-semibold tracking-wider uppercase text-[#0066CC] rounded-full border border-[#0066CC]/20 mb-6">
               The PROW Security Layer
             </span>
-            <h2 className="text-4xl md:text-6xl font-heading font-bold mb-6 text-balance">
+            <h2 className="text-4xl md:text-6xl font-heading font-bold mb-6 text-balance text-[#1e3a5f]">
               Medical-Grade Security, Built to the Highest Standard
             </h2>
-            <p className="text-xl text-text/70 max-w-2xl mx-auto">
+            <p className="text-xl text-[#5A6470] max-w-2xl mx-auto">
               Security is not a feature of PROW — it is the foundation. If a system protects the most sensitive
               data categories, it is secure enough for high-trust professional use cases.
             </p>
@@ -362,17 +360,17 @@ export default function SecurityLayer() {
                     },
                   }}
                   whileHover={{ y: -8 }}
-                  className="bg-background p-8 rounded-sm border border-text/5 hover:border-text/10 transition-all flex flex-col"
+                  className="bg-white p-8 rounded-sm border border-[#0066CC]/10 hover:border-[#0066CC]/30 hover:shadow-lg hover:shadow-[#0066CC]/5 transition-all flex flex-col"
                 >
                   <div className="flex items-center gap-4 mb-6">
-                    <div className="p-3 bg-background-alt rounded-sm">
-                      <IconComponent className="w-6 h-6 text-accent" />
+                    <div className="p-3 bg-[#0066CC]/10 rounded-sm">
+                      <IconComponent className="w-6 h-6 text-[#0066CC]" />
                     </div>
-                    <h3 className="text-2xl font-heading font-semibold">{safeguard.category}</h3>
+                    <h3 className="text-2xl font-heading font-semibold text-[#1e3a5f]">{safeguard.category}</h3>
                   </div>
 
                   {/* Animation Container */}
-                  <div className="h-[200px] mb-6 flex items-center justify-center bg-background-alt rounded-sm overflow-hidden relative">
+                  <div className="h-[200px] mb-6 flex items-center justify-center bg-gradient-to-br from-[#0066CC]/5 to-[#1e3a5f]/5 rounded-sm overflow-hidden relative">
                     {safeguard.animationType === 'administrative' && <AdministrativeAnimation />}
                     {safeguard.animationType === 'physical' && <PhysicalAnimation />}
                     {safeguard.animationType === 'technical' && <TechnicalAnimation />}
@@ -387,8 +385,8 @@ export default function SecurityLayer() {
                         transition={{ delay: 0.4 + index * 0.1 + i * 0.05, duration: 0.4 }}
                         className="flex items-start gap-3"
                       >
-                        <span className="text-accent mt-1 flex-shrink-0">✓</span>
-                        <span className="text-text/80 leading-relaxed text-sm">{item}</span>
+                        <span className="text-[#0066CC] mt-1 flex-shrink-0">✓</span>
+                        <span className="text-[#5A6470] leading-relaxed text-sm">{item}</span>
                       </motion.li>
                     ))}
                   </ul>
@@ -401,4 +399,3 @@ export default function SecurityLayer() {
     </section>
   )
 }
-

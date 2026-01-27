@@ -42,14 +42,14 @@ export default function PrivacyDataProtection() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
-    <section id="trust" className="py-32 px-6 md:px-12 bg-background">
+    <section id="trust" className="py-32 px-6 md:px-12 bg-white">
       <div className="max-w-[var(--container-max-width)] mx-auto">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 1, 0.5, 1] }}
-            className="relative h-[500px] bg-background-alt rounded-sm overflow-hidden order-2 lg:order-1"
+            className="relative h-[500px] bg-gradient-to-br from-[#0066CC]/5 to-[#1e3a5f]/10 rounded-sm overflow-hidden order-2 lg:order-1 border border-[#0066CC]/10"
           >
             <PrivacyVisualization />
           </motion.div>
@@ -61,13 +61,13 @@ export default function PrivacyDataProtection() {
             transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
             className="order-1 lg:order-2"
           >
-            <span className="inline-block px-4 py-1.5 bg-background-alt text-xs font-heading font-semibold tracking-wider uppercase text-text/70 rounded-sm mb-6">
+            <span className="inline-block px-4 py-1.5 bg-[#0066CC]/10 text-xs font-heading font-semibold tracking-wider uppercase text-[#0066CC] rounded-full border border-[#0066CC]/20 mb-6">
               Trusted by High-Trust Teams
             </span>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-balance">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-balance text-[#1e3a5f]">
               Built for Organizations That Cannot Risk Exposure
             </h2>
-            <p className="text-lg text-text/70 mb-8 leading-relaxed">
+            <p className="text-lg text-[#5A6470] mb-8 leading-relaxed">
               Medical-grade security refers to the rigor of the architecture, not a healthcare product claim.
               PROW is designed to protect the most sensitive categories of data across high-trust professional teams.
             </p>
@@ -81,15 +81,15 @@ export default function PrivacyDataProtection() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                     transition={{ delay: 0.3 + featureIndex * 0.15, duration: 0.5 }}
-                    className="border-l-2 border-accent/30 pl-6"
+                    className="border-l-2 border-[#0066CC] pl-6"
                   >
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-background-alt rounded-sm">
-                        <IconComponent className="w-5 h-5 text-accent" />
+                      <div className="p-2 bg-[#0066CC]/10 rounded-sm">
+                        <IconComponent className="w-5 h-5 text-[#0066CC]" />
                       </div>
-                      <h3 className="text-xl font-heading font-semibold">{feature.title}</h3>
+                      <h3 className="text-xl font-heading font-semibold text-[#1e3a5f]">{feature.title}</h3>
                       {feature.critical && (
-                        <span className="px-2 py-0.5 bg-accent/10 text-accent text-xs font-heading font-semibold uppercase tracking-wider rounded-sm flex items-center gap-1">
+                        <span className="px-2 py-0.5 bg-[#0066CC]/10 text-[#0066CC] text-xs font-heading font-semibold uppercase tracking-wider rounded-full flex items-center gap-1">
                           <AlertTriangle className="w-3 h-3" />
                           Critical
                         </span>
@@ -104,8 +104,8 @@ export default function PrivacyDataProtection() {
                           transition={{ delay: 0.4 + featureIndex * 0.15 + itemIndex * 0.05, duration: 0.4 }}
                           className="flex items-start gap-3"
                         >
-                          <span className="text-accent mt-1 flex-shrink-0">✓</span>
-                          <span className="text-text/80 text-sm leading-relaxed">{item}</span>
+                          <span className="text-[#0066CC] mt-1 flex-shrink-0">✓</span>
+                          <span className="text-[#5A6470] text-sm leading-relaxed">{item}</span>
                         </motion.li>
                       ))}
                     </ul>
@@ -142,9 +142,9 @@ function PrivacyVisualization() {
               height="16"
               rx="2"
               fill="none"
-              stroke="currentColor"
+              stroke="#0066CC"
               strokeWidth="0.4"
-              className="text-accent/40"
+              strokeOpacity="0.4"
               initial={{ pathLength: 0, opacity: 0 }}
               animate={{ pathLength: 1, opacity: 1 }}
               transition={{ duration: 0.8, delay: container.delay }}
@@ -156,8 +156,7 @@ function PrivacyVisualization() {
                 cx={container.x + (point - 1) * 3}
                 cy={container.y + (point % 2) * 3}
                 r="1"
-                fill="currentColor"
-                className="text-accent"
+                fill="#0066CC"
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{
                   scale: [0, 1.2, 1],
@@ -177,9 +176,9 @@ function PrivacyVisualization() {
               cy={container.y}
               r="12"
               fill="none"
-              stroke="currentColor"
+              stroke="#0066CC"
               strokeWidth="0.3"
-              className="text-accent/20"
+              strokeOpacity="0.2"
               animate={{
                 r: [12, 16, 12],
                 opacity: [0.3, 0, 0.3],
@@ -205,10 +204,10 @@ function PrivacyVisualization() {
                 y1={container.y}
                 x2={nextContainer.x - 8}
                 y2={nextContainer.y}
-                stroke="currentColor"
+                stroke="#0066CC"
                 strokeWidth="0.5"
                 strokeDasharray="2 2"
-                className="text-accent/30"
+                strokeOpacity="0.3"
                 initial={{ pathLength: 0, opacity: 0 }}
                 animate={{
                   pathLength: [0, 1, 1, 0],
@@ -237,8 +236,8 @@ function PrivacyVisualization() {
             cx="50"
             cy="50"
             r="8"
-            fill="currentColor"
-            className="text-accent/10"
+            fill="#0066CC"
+            fillOpacity="0.1"
             animate={{
               scale: [1, 1.2, 1],
               opacity: [0.2, 0.3, 0.2],
@@ -251,8 +250,7 @@ function PrivacyVisualization() {
           />
           <motion.path
             d="M50 42 L46 44 L46 48 C46 52 48 54 50 56 C52 54 54 52 54 48 L54 44 Z"
-            fill="currentColor"
-            className="text-accent"
+            fill="#0066CC"
             animate={{
               scale: [1, 1.1, 1],
             }}
@@ -272,9 +270,9 @@ function PrivacyVisualization() {
             y1="50"
             x2={50 + Math.cos((angle * Math.PI) / 180) * 25}
             y2={50 + Math.sin((angle * Math.PI) / 180) * 25}
-            stroke="currentColor"
+            stroke="#0066CC"
             strokeWidth="0.3"
-            className="text-accent/15"
+            strokeOpacity="0.15"
             animate={{
               opacity: [0.1, 0.3, 0.1],
             }}
@@ -290,4 +288,3 @@ function PrivacyVisualization() {
     </div>
   )
 }
-
