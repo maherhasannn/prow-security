@@ -62,7 +62,21 @@ export async function POST(request: Request) {
 
     const provider = isInternetEnabled ? new OpenAIProvider() : new OllamaProvider()
     const defaultModel = isInternetEnabled ? 'gpt-4o' : 'gpt-oss:120b-cloud'
-    const resolvedModel = model || defaultModel
+
+    // Validate model against provider - use default if client sends wrong model for the mode
+    const validOpenAIModels = ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo']
+    const validOllamaModels = ['gpt-oss:120b-cloud', 'qwen3-coder:480b-cloud', 'deepseek-v3.1:671b-cloud', 'llama3.3:70b-cloud', 'mistral-large:2406-cloud']
+
+    let resolvedModel = defaultModel
+    if (model) {
+      if (isInternetEnabled && validOpenAIModels.includes(model)) {
+        resolvedModel = model
+      } else if (!isInternetEnabled && validOllamaModels.includes(model)) {
+        resolvedModel = model
+      } else {
+        console.log(`[AI Chat] Client requested invalid model "${model}" for ${isInternetEnabled ? 'OpenAI' : 'Ollama'}, using default: ${defaultModel}`)
+      }
+    }
 
     console.log(`[AI Chat] Using provider: ${isInternetEnabled ? 'OpenAI' : 'Ollama'}, model: ${resolvedModel}`)
 
