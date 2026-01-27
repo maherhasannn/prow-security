@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false)
@@ -32,9 +33,14 @@ export default function Navigation() {
               whileTap={{ scale: 0.98 }}
               className="cursor-pointer"
             >
-              <span className="font-heading text-2xl font-bold text-gray-600 hover:text-[#0066CC] transition-colors duration-200">
-                Prow<sup className="text-xs">®</sup>
-              </span>
+              <Image
+                src="/images/prow-logo.png"
+                alt="PROW"
+                width={120}
+                height={40}
+                className="h-8 w-auto"
+                priority
+              />
             </motion.div>
           </Link>
 
