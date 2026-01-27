@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { ArrowLeft, Send, Lock, Info, Globe } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
 import DocumentSidebar from './DocumentSidebar'
 import NotesSidebar from './NotesSidebar'
 import SessionTimer from './SessionTimer'
@@ -468,9 +469,15 @@ ${context}`
                           : 'bg-background-alt border border-text/10'
                       } rounded-sm p-4`}
                     >
-                      <div className="text-sm text-text leading-relaxed whitespace-pre-wrap">
-                        {message.content}
-                      </div>
+                      {message.role === 'user' ? (
+                        <div className="text-sm text-text leading-relaxed whitespace-pre-wrap">
+                          {message.content}
+                        </div>
+                      ) : (
+                        <div className="text-sm text-text leading-relaxed prose prose-sm max-w-none prose-p:my-2 prose-headings:my-3 prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5 prose-pre:bg-text/5 prose-pre:p-3 prose-pre:rounded prose-code:text-accent prose-code:bg-text/5 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none">
+                          <ReactMarkdown>{message.content}</ReactMarkdown>
+                        </div>
+                      )}
                       <div className="text-xs text-text/50 mt-2">
                         {formatTime(message.timestamp)}
                       </div>
