@@ -45,19 +45,19 @@ export default function Navigation() {
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
-            <Link href="/" className="text-sm font-medium text-gray-600 hover:text-[#0066CC] transition-colors">
+            <Link href="/" className="text-sm font-medium text-gray-600 hover:text-[#29ABE2] transition-colors">
               Home
             </Link>
-            <Link href="/product" className="text-sm font-medium text-gray-600 hover:text-[#0066CC] transition-colors">
+            <Link href="/product" className="text-sm font-medium text-gray-600 hover:text-[#29ABE2] transition-colors">
               Product
             </Link>
-            <Link href="/about" className="text-sm font-medium text-gray-600 hover:text-[#0066CC] transition-colors">
+            <Link href="/about" className="text-sm font-medium text-gray-600 hover:text-[#29ABE2] transition-colors">
               About
             </Link>
-            <Link href="/pricing" className="text-sm font-medium text-gray-600 hover:text-[#0066CC] transition-colors">
+            <Link href="/pricing" className="text-sm font-medium text-gray-600 hover:text-[#29ABE2] transition-colors">
               Pricing
             </Link>
-            <Link href="/company" className="text-sm font-medium text-gray-600 hover:text-[#0066CC] transition-colors">
+            <Link href="/company" className="text-sm font-medium text-gray-600 hover:text-[#29ABE2] transition-colors">
               Company
             </Link>
           </div>
@@ -66,7 +66,7 @@ export default function Navigation() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-6 py-2.5 bg-[#0066CC] text-white text-sm font-medium rounded-sm hover:bg-[#0052A3] transition-colors"
+              className="px-6 py-2.5 bg-[#3A6A7B] text-white text-sm font-medium rounded-sm hover:bg-[#29ABE2] transition-colors"
             >
               Sign In
             </motion.button>

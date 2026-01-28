@@ -4,12 +4,12 @@
 
 :root {
   /* Color Palette - Light & Airy */
-  --color-background: #F9F9F7;
+  --color-background: #F0F0E1;
   --color-background-alt: #F2F4F6;
   --color-text: #1A1F2C;
   --color-text-muted: #5A6470;
-  --color-accent: #0066CC;
-  --color-accent-hover: #0052A3;
+  --color-accent: #3A6A7B;
+  --color-accent-hover: #29ABE2;
   
   /* Typography */
   --font-heading: 'Space Grotesk', -apple-system, sans-serif;

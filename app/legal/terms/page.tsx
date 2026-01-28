@@ -168,7 +168,7 @@ export default function TermsOfServicePage() {
               If you have any questions about these Terms of Service, please contact us:
             </p>
             <p className="mt-4">
-              <strong>Email:</strong> <a href="mailto:info@prowco.ai" className="text-[#0066CC] hover:underline">info@prowco.ai</a><br />
+              <strong>Email:</strong> <a href="mailto:info@prowco.ai" className="text-[#3A6A7B] hover:underline">info@prowco.ai</a><br />
               <strong>Address:</strong> Prow Co., Los Angeles, USA
             </p>
           </section>

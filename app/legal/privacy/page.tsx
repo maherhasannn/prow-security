@@ -134,7 +134,7 @@ export default function PrivacyPolicyPage() {
               <li>Withdraw consent where processing is based on consent</li>
             </ul>
             <p className="mt-4">
-              To exercise these rights, please contact us at <a href="mailto:info@prowco.ai" className="text-[#0066CC] hover:underline">info@prowco.ai</a>.
+              To exercise these rights, please contact us at <a href="mailto:info@prowco.ai" className="text-[#3A6A7B] hover:underline">info@prowco.ai</a>.
             </p>
           </section>
 
@@ -158,7 +158,7 @@ export default function PrivacyPolicyPage() {
               If you have any questions about this Privacy Policy or our privacy practices, please contact our Privacy Officer:
             </p>
             <p className="mt-4">
-              <strong>Email:</strong> <a href="mailto:info@prowco.ai" className="text-[#0066CC] hover:underline">info@prowco.ai</a><br />
+              <strong>Email:</strong> <a href="mailto:info@prowco.ai" className="text-[#3A6A7B] hover:underline">info@prowco.ai</a><br />
               <strong>Address:</strong> Prow Co., Los Angeles, USA
             </p>
           </section>

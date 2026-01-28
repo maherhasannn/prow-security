@@ -32,10 +32,10 @@ export default function ChatIntegration() {
               visible: { y: 0, opacity: 1, transition: { duration: 0.6, ease: [0.25, 1, 0.5, 1] } },
             }}
           >
-            <span className="inline-block px-4 py-1.5 bg-[#0066CC]/10 text-xs font-heading font-semibold tracking-wider uppercase text-[#0066CC] rounded-full border border-[#0066CC]/20 mb-6">
+            <span className="inline-block px-4 py-1.5 bg-[#3A6A7B]/10 text-xs font-heading font-semibold tracking-wider uppercase text-[#3A6A7B] rounded-full border border-[#3A6A7B]/20 mb-6">
               Secure Data Inputs
             </span>
-            <h2 className="text-4xl md:text-6xl font-heading font-bold mb-6 text-balance text-[#1e3a5f]">
+            <h2 className="text-4xl md:text-6xl font-heading font-bold mb-6 text-balance text-[#3A6A7B]">
               Bring Your Data Into a Private AI Workspace
             </h2>
             <p className="text-xl text-[#5A6470] max-w-2xl mx-auto">
@@ -64,9 +64,9 @@ export default function ChatIntegration() {
             <motion.div
               key={platform}
               whileHover={{ scale: 1.05, y: -2 }}
-              className="px-6 py-3 bg-[#0066CC]/5 border border-[#0066CC]/20 rounded-full hover:border-[#0066CC]/40 hover:bg-[#0066CC]/10 transition-all cursor-default"
+              className="px-6 py-3 bg-[#3A6A7B]/5 border border-[#3A6A7B]/20 rounded-full hover:border-[#3A6A7B]/40 hover:bg-[#3A6A7B]/10 transition-all cursor-default"
             >
-              <span className="text-sm font-medium text-[#1e3a5f]">{platform}</span>
+              <span className="text-sm font-medium text-[#3A6A7B]">{platform}</span>
             </motion.div>
           ))}
         </motion.div>
@@ -77,15 +77,15 @@ export default function ChatIntegration() {
 
 function ChatInterface() {
   return (
-    <div className="bg-white rounded-sm border border-[#0066CC]/10 overflow-hidden shadow-xl shadow-[#0066CC]/5">
+    <div className="bg-white rounded-sm border border-[#3A6A7B]/10 overflow-hidden shadow-xl shadow-[#3A6A7B]/5">
       {/* Mock Chat Interface */}
-      <div className="p-6 border-b border-[#0066CC]/10 bg-gradient-to-r from-[#0066CC]/5 to-transparent">
+      <div className="p-6 border-b border-[#3A6A7B]/10 bg-gradient-to-r from-[#3A6A7B]/5 to-transparent">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-[#0066CC]/20 flex items-center justify-center">
-            <span className="text-[#0066CC] font-heading font-bold text-sm">P</span>
+          <div className="w-10 h-10 rounded-full bg-[#3A6A7B]/20 flex items-center justify-center">
+            <span className="text-[#3A6A7B] font-heading font-bold text-sm">P</span>
           </div>
           <div>
-            <div className="font-heading font-semibold text-[#1e3a5f]">PROW Workspace</div>
+            <div className="font-heading font-semibold text-[#3A6A7B]">PROW Workspace</div>
             <div className="text-xs text-[#5A6470]">Secure AI Session</div>
           </div>
         </div>
@@ -109,14 +109,14 @@ function ChatInterface() {
               <div
                 className={`max-w-[85%] p-4 rounded-sm ${
                   msg.side === 'right'
-                    ? 'bg-white text-[#1e3a5f] border border-[#0066CC]/10'
+                    ? 'bg-white text-[#3A6A7B] border border-[#3A6A7B]/10'
                     : msg.isProw
-                    ? 'bg-[#0066CC]/10 text-[#1e3a5f] border-l-2 border-[#0066CC]'
-                    : 'bg-white text-[#1e3a5f]'
+                    ? 'bg-[#3A6A7B]/10 text-[#3A6A7B] border-l-2 border-[#3A6A7B]'
+                    : 'bg-white text-[#3A6A7B]'
                 }`}
               >
                 {msg.isProw && (
-                  <div className="text-xs font-heading font-semibold text-[#0066CC] mb-1 uppercase tracking-wider">
+                  <div className="text-xs font-heading font-semibold text-[#3A6A7B] mb-1 uppercase tracking-wider">
                     Prow
                   </div>
                 )}
@@ -131,20 +131,20 @@ function ChatInterface() {
           initial={{ x: '100%', opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 1.5, duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
-          className="w-64 flex-shrink-0 bg-[#0066CC]/5 border-l border-[#0066CC]/20 p-4"
+          className="w-64 flex-shrink-0 bg-[#3A6A7B]/5 border-l border-[#3A6A7B]/20 p-4"
         >
           <div className="mb-6">
-            <div className="text-xs font-heading font-semibold text-[#0066CC] uppercase tracking-wider mb-3">
+            <div className="text-xs font-heading font-semibold text-[#3A6A7B] uppercase tracking-wider mb-3">
               Context
             </div>
             <div className="space-y-2">
-              <div className="h-2 w-full bg-[#0066CC]/20 rounded" />
-              <div className="h-2 w-3/4 bg-[#0066CC]/20 rounded" />
-              <div className="h-2 w-5/6 bg-[#0066CC]/20 rounded" />
+              <div className="h-2 w-full bg-[#3A6A7B]/20 rounded" />
+              <div className="h-2 w-3/4 bg-[#3A6A7B]/20 rounded" />
+              <div className="h-2 w-5/6 bg-[#3A6A7B]/20 rounded" />
             </div>
           </div>
           <div>
-            <div className="text-xs font-heading font-semibold text-[#0066CC] uppercase tracking-wider mb-3">
+            <div className="text-xs font-heading font-semibold text-[#3A6A7B] uppercase tracking-wider mb-3">
               Sources
             </div>
             <div className="space-y-2">
@@ -154,7 +154,7 @@ function ChatInterface() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1.7 + i * 0.1 }}
-                  className="text-xs text-[#5A6470] break-words bg-white px-2 py-1 rounded border border-[#0066CC]/10"
+                  className="text-xs text-[#5A6470] break-words bg-white px-2 py-1 rounded border border-[#3A6A7B]/10"
                 >
                   {source}
                 </motion.div>

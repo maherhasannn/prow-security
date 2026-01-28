@@ -103,8 +103,8 @@ export default function LegalDisclaimerPage() {
               For complete information about your rights and obligations when using our Services, please also review:
             </p>
             <ul className="list-disc pl-6 space-y-2">
-              <li><Link href="/legal/terms" className="text-[#0066CC] hover:underline">Terms of Service</Link></li>
-              <li><Link href="/legal/privacy" className="text-[#0066CC] hover:underline">Privacy Policy</Link></li>
+              <li><Link href="/legal/terms" className="text-[#3A6A7B] hover:underline">Terms of Service</Link></li>
+              <li><Link href="/legal/privacy" className="text-[#3A6A7B] hover:underline">Privacy Policy</Link></li>
             </ul>
           </section>
 
@@ -114,7 +114,7 @@ export default function LegalDisclaimerPage() {
               If you have any questions about this Legal Disclaimer, please contact us:
             </p>
             <p className="mt-4">
-              <strong>Email:</strong> <a href="mailto:info@prowco.ai" className="text-[#0066CC] hover:underline">info@prowco.ai</a><br />
+              <strong>Email:</strong> <a href="mailto:info@prowco.ai" className="text-[#3A6A7B] hover:underline">info@prowco.ai</a><br />
               <strong>Address:</strong> Prow Co., Los Angeles, USA
             </p>
           </section>
