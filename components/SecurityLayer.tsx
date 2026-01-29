@@ -310,7 +310,7 @@ export default function SecurityLayer() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
-    <section id="security-layer" className="py-32 px-6 md:px-12 bg-gradient-to-b from-[#F0F0E1] to-white">
+    <section id="security-layer" className="py-32 px-6 md:px-12 bg-gradient-to-b from-[#EDF5F5] to-white">
       <div className="max-w-[var(--container-max-width)] mx-auto">
         <motion.div
           ref={ref}
