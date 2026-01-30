@@ -47,18 +47,18 @@ export default function PricingPage() {
               <div className="text-4xl md:text-5xl font-heading font-bold mb-4">Per-seat pricing</div>
               <p className="text-text/70 leading-relaxed">
                 Start with the seats you need today and expand as your usage grows.
-                Every seat includes PROW's medical-grade security foundation and access to supported data inputs.
+                Every seat includes PROW&apos;s medical-grade security foundation and access to supported data inputs.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* What's Included Section */}
+      {/* What&apos;s Included Section */}
       <section className="py-20 px-6 md:px-12 bg-background">
         <div className="max-w-[var(--container-max-width)] mx-auto">
           <h2 className="text-3xl md:text-4xl font-heading font-bold mb-12 text-center">
-            What's Included
+            What&apos;s Included
           </h2>
           <div className="max-w-2xl mx-auto space-y-4">
             {whatsIncluded.map((item) => (
