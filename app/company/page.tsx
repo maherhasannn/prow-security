@@ -43,37 +43,37 @@ const TeamMemberImage = ({ src, alt, initials }: { src: string; alt: string; ini
 
 const leadershipTeam = [
   {
-    name: 'Sir Steven',
+    name: 'Sir Steven Saxton',
     initials: 'SS',
     image: '/images/team/steven.jpg',
     linkedin: 'https://www.linkedin.com/in/sir-steven-saxton-ba849b35/',
   },
   {
-    name: 'Katherine',
+    name: 'Katherine Saxton',
     initials: 'K',
     image: '/images/team/katherine.jpg',
     linkedin: 'https://www.linkedin.com/in/katherine-guevara-saxton-a26a7877/',
   },
   {
-    name: 'Professor Nelson',
+    name: 'Professor Nelson Granados',
     initials: 'PN',
     image: '/images/team/nelson.jpg',
     linkedin: 'https://www.linkedin.com/in/nelson-granados-64a3393/',
   },
   {
-    name: 'Lee',
+    name: 'Lee Daley',
     initials: 'L',
     image: '/images/team/lee.jpg',
     linkedin: null,
   },
   {
-    name: 'Sarah',
+    name: 'Sarah Robarts',
     initials: 'S',
     image: '/images/team/sarah.jpg',
     linkedin: 'https://www.linkedin.com/in/sarahrobarts1/',
   },
   {
-    name: 'Dr. Samir',
+    name: 'Dr. Samir Mohamed Yusuf',
     initials: 'DS',
     image: '/images/team/samir.jpg',
     linkedin: 'https://www.linkedin.com/in/drsamir/',
