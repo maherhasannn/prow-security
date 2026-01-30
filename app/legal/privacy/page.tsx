@@ -10,13 +10,13 @@ export default function PrivacyPolicyPage() {
     <div className="py-16 px-6 md:px-12">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4">Privacy Policy</h1>
-        <p className="text-text/60 mb-12">Effective Date: August 1, 2025</p>
+        <p className="text-text/60 mb-12">Effective Date: January 7, 2026</p>
 
         <div className="prose prose-lg max-w-none prose-headings:font-heading prose-headings:font-semibold prose-p:text-text/80 prose-li:text-text/80">
           <section className="mb-12">
             <h2 className="text-2xl mb-4">1. Introduction</h2>
             <p>
-              Prow Co. (&quot;Prow,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website prowco.ai, use our products and services including Prow® and ProwPay™, or interact with us through email, social media, or other communications.
+              Prow Co. (&quot;Prow,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website prowco.ai, use our products and services including Prow®, ProwPay™ and Green Stable Coin®, or interact with us through email, social media, or other communications.
             </p>
             <p>
               Please read this Privacy Policy carefully. By using our Services, you agree to the collection and use of information in accordance with this policy.
@@ -30,7 +30,7 @@ export default function PrivacyPolicyPage() {
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li>Our website at prowco.ai and all associated subdomains</li>
-              <li>Our products and services, including Prow® and ProwPay™</li>
+              <li>Our products and services, including Prow®, ProwPay™, and Green Stable Coin®</li>
               <li>Email and other electronic communications with us</li>
               <li>Social media interactions</li>
             </ul>

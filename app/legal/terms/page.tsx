@@ -10,7 +10,7 @@ export default function TermsOfServicePage() {
     <div className="py-16 px-6 md:px-12">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4">Terms of Service</h1>
-        <p className="text-text/60 mb-12">Effective Date: August 1, 2025</p>
+        <p className="text-text/60 mb-12">Effective Date: January 7, 2026</p>
 
         <div className="prose prose-lg max-w-none prose-headings:font-heading prose-headings:font-semibold prose-p:text-text/80 prose-li:text-text/80">
           <section className="mb-12">
@@ -33,6 +33,7 @@ export default function TermsOfServicePage() {
               <li>Private, organization-isolated workspaces</li>
               <li>Data integration capabilities</li>
               <li>ProwPay™ payment processing services (where available)</li>
+              <li>Green Stable Coin® digital currency services (where available)</li>
             </ul>
           </section>
 
@@ -83,7 +84,7 @@ export default function TermsOfServicePage() {
               The Services and all associated intellectual property rights are and shall remain the exclusive property of Prow Co. and its licensors. These Terms do not grant you any rights to use our trademarks, logos, or brand features without prior written consent.
             </p>
             <p className="mt-4">
-              Prow® and ProwPay™ are trademarks of Prow Co. All rights reserved.
+              Prow®, ProwPay™ and Green Stable Coin® are trademarks of Prow Co. All rights reserved.
             </p>
           </section>
 

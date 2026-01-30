@@ -51,9 +51,6 @@ export default function Navigation() {
             <Link href="/product" className="text-sm font-medium text-gray-600 hover:text-[#29ABE2] transition-colors">
               Product
             </Link>
-            <Link href="/about" className="text-sm font-medium text-gray-600 hover:text-[#29ABE2] transition-colors">
-              About
-            </Link>
             <Link href="/pricing" className="text-sm font-medium text-gray-600 hover:text-[#29ABE2] transition-colors">
               Pricing
             </Link>

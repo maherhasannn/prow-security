@@ -27,7 +27,7 @@ const capabilities = [
 ]
 
 const securityBaseline = [
-  'No training on customer data — hard guarantee',
+  'No training on customer data — by design',
   'No cross-tenant learning',
   'Private, organization-isolated AI workspaces',
   'Role-based access control (RBAC)',
@@ -74,6 +74,67 @@ export default function ProductPage() {
       </section>
 
       <section className="py-20 px-6 md:px-12 bg-background">
+        <div className="max-w-[var(--container-max-width)] mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-4 text-balance">
+              Two Secure AI Modes. One PROW® Platform.
+            </h2>
+            <p className="text-lg text-text/70 leading-relaxed max-w-2xl mx-auto">
+              Choose the level of protection your work requires — without changing tools.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="bg-background-alt p-8 rounded-sm border border-text/10">
+              <h3 className="text-2xl font-heading font-semibold mb-2">Prow Secure™</h3>
+              <p className="text-accent text-sm font-medium mb-6">Best-in-class AI with enterprise controls</p>
+              <ul className="space-y-3 mb-6">
+                <li className="flex items-start gap-3">
+                  <span className="text-accent mt-1">✓</span>
+                  <span className="text-text/80">Best-in-class AI models</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-accent mt-1">✓</span>
+                  <span className="text-text/80">No training on customer data — enforced by design</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-accent mt-1">✓</span>
+                  <span className="text-text/80">Guardrails, auditability, and governed collaboration</span>
+                </li>
+              </ul>
+              <p className="text-sm text-text/60 italic">
+                Best for teams that want powerful AI with strong, policy-driven protections.
+              </p>
+            </div>
+            <div className="bg-background-alt p-8 rounded-sm border border-text/10">
+              <h3 className="text-2xl font-heading font-semibold mb-2">Prow Core™</h3>
+              <p className="text-accent text-sm font-medium mb-6">Fully private AI. Absolute isolation.</p>
+              <ul className="space-y-3 mb-6">
+                <li className="flex items-start gap-3">
+                  <span className="text-accent mt-1">✓</span>
+                  <span className="text-text/80">Private AI environment</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-accent mt-1">✓</span>
+                  <span className="text-text/80">Nothing leaves the platform</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-accent mt-1">✓</span>
+                  <span className="text-text/80">Isolation by design</span>
+                </li>
+              </ul>
+              <p className="text-sm text-text/60 italic">
+                Best for zero-tolerance, high-sensitivity work.
+              </p>
+            </div>
+          </div>
+          <div className="text-center mt-12">
+            <h3 className="text-2xl font-heading font-semibold mb-2">Same Platform. Different Security Postures.</h3>
+            <p className="text-text/70">You decide how protected your AI needs to be.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 px-6 md:px-12 bg-background-alt">
         <div className="max-w-[var(--container-max-width)] mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             <div>

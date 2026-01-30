@@ -11,13 +11,13 @@ export default function LegalDisclaimerPage() {
     <div className="py-16 px-6 md:px-12">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4">Legal Disclaimer</h1>
-        <p className="text-text/60 mb-12">Effective Date: August 1, 2025</p>
+        <p className="text-text/60 mb-12">Effective Date: January 7, 2026</p>
 
         <div className="prose prose-lg max-w-none prose-headings:font-heading prose-headings:font-semibold prose-p:text-text/80 prose-li:text-text/80">
           <section className="mb-12">
             <h2 className="text-2xl mb-4">General Information</h2>
             <p>
-              The information provided by Prow Co. (&quot;Prow,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) on prowco.ai and through our products and services, including Prow® and ProwPay™, is for general informational purposes only.
+              The information provided by Prow Co. (&quot;Prow,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) on prowco.ai and through our products and services, including Prow®, ProwPay™ and Green Stable Coin®, is for general informational purposes only.
             </p>
             <p>
               All information on the Site and through our Services is provided in good faith. However, we make no representation or warranty of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any information on the Site or through our Services.
@@ -70,7 +70,7 @@ export default function LegalDisclaimerPage() {
           <section className="mb-12">
             <h2 className="text-2xl mb-4">Trademarks and Intellectual Property</h2>
             <p>
-              Prow® and ProwPay™ are trademarks of Prow Co. All other trademarks, service marks, and trade names referenced on this website are the property of their respective owners.
+              Prow®, ProwPay™ and Green Stable Coin® are trademarks of Prow Co. All other trademarks, service marks, and trade names referenced on this website are the property of their respective owners.
             </p>
             <p className="mt-4">
               Nothing contained on this website should be construed as granting any license or right to use any trademark without the prior written permission of Prow Co. or such third party that may own the trademarks.
