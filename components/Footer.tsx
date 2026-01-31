@@ -83,7 +83,7 @@ export default function Footer() {
               © {new Date().getFullYear()} Prow<sup>®</sup>, Los Angeles, USA. All rights reserved.
             </p>
             <p className="text-xs text-white/40 mt-1">
-              Prow<sup>®</sup> and ProwPay™ are trademarks of Prow Co.
+              Prow<sup>®</sup>, ProwPay™, and Green Stable Coin<sup>®</sup> are trademarks of Prow Co.
             </p>
           </div>
           <div className="flex gap-4">
