@@ -36,25 +36,25 @@ export default function Navigation() {
               <Image
                 src="/images/prow-logo.png"
                 alt="PROW"
-                width={120}
-                height={40}
-                className="h-8 w-auto"
+                width={144}
+                height={48}
+                className="h-[2.4rem] w-auto"
                 priority
               />
             </motion.div>
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
-            <Link href="/" className="text-sm font-medium text-gray-600 hover:text-[#29ABE2] transition-colors">
+            <Link href="/" className="text-base font-medium text-gray-600 hover:text-[#29ABE2] transition-colors">
               Home
             </Link>
-            <Link href="/product" className="text-sm font-medium text-gray-600 hover:text-[#29ABE2] transition-colors">
+            <Link href="/product" className="text-base font-medium text-gray-600 hover:text-[#29ABE2] transition-colors">
               Product
             </Link>
-            <Link href="/pricing" className="text-sm font-medium text-gray-600 hover:text-[#29ABE2] transition-colors">
+            <Link href="/pricing" className="text-base font-medium text-gray-600 hover:text-[#29ABE2] transition-colors">
               Pricing
             </Link>
-            <Link href="/company" className="text-sm font-medium text-gray-600 hover:text-[#29ABE2] transition-colors">
+            <Link href="/company" className="text-base font-medium text-gray-600 hover:text-[#29ABE2] transition-colors">
               Company
             </Link>
           </div>

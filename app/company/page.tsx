@@ -43,37 +43,43 @@ const TeamMemberImage = ({ src, alt, initials }: { src: string; alt: string; ini
 
 const leadershipTeam = [
   {
-    name: 'Sir Steven Saxton',
+    name: 'Steven',
+    title: 'Founder / CEO',
     initials: 'SS',
     image: '/images/team/steven.jpg',
     linkedin: 'https://www.linkedin.com/in/sir-steven-saxton-ba849b35/',
   },
   {
-    name: 'Katherine Saxton',
+    name: 'Katherine',
+    title: 'Founder / Chief Experience & AI Officer',
     initials: 'K',
     image: '/images/team/katherine.jpg',
     linkedin: 'https://www.linkedin.com/in/katherine-guevara-saxton-a26a7877/',
   },
   {
-    name: 'Professor Nelson Granados',
+    name: 'Prof. Nelson Granados Ph.D.',
+    title: 'Chief Intelligence Officer',
     initials: 'PN',
     image: '/images/team/nelson.jpg',
     linkedin: 'https://www.linkedin.com/in/nelson-granados-64a3393/',
   },
   {
     name: 'Lee Daley',
+    title: 'Chief Strategy Officer',
     initials: 'L',
     image: '/images/team/lee.jpg',
-    linkedin: null,
+    linkedin: 'https://www.linkedin.com/in/lee-daley-frsa/',
   },
   {
-    name: 'Sarah Robarts',
+    name: 'Sarah Roberts',
+    title: 'Communications Director',
     initials: 'S',
     image: '/images/team/sarah.jpg',
     linkedin: 'https://www.linkedin.com/in/sarahrobarts1/',
   },
   {
     name: 'Dr. Samir Mohamed Yusuf',
+    title: 'Managing Director MEI (Middle East & India)',
     initials: 'DS',
     image: '/images/team/samir.jpg',
     linkedin: 'https://www.linkedin.com/in/drsamir/',
@@ -196,7 +202,7 @@ export default function CompanyPage() {
       {/* What We Believe Section */}
       <section className="py-20 px-6 md:px-12 bg-background-alt overflow-hidden">
         <div className="max-w-[var(--container-max-width)] mx-auto">
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             <motion.h2
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -206,21 +212,71 @@ export default function CompanyPage() {
             >
               What We Believe
             </motion.h2>
-            <ul className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {beliefs.map((belief, index) => (
-                <motion.li
+                <motion.div
                   key={belief}
-                  initial={{ opacity: 0, x: -30 }}
+                  initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   className="flex items-start gap-4 text-lg text-text/80"
                 >
-                  <span className="text-accent mt-1">✓</span>
+                  <span className="text-accent mt-1 flex-shrink-0">✓</span>
                   <span>{belief}</span>
-                </motion.li>
+                </motion.div>
               ))}
-            </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Leadership Section */}
+      <section className="py-20 px-6 md:px-12 bg-background overflow-hidden">
+        <div className="max-w-[var(--container-max-width)] mx-auto">
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-3xl md:text-4xl font-heading font-bold mb-12 text-center"
+          >
+            Leadership
+          </motion.h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
+            {leadershipTeam.map((member, index) => (
+              <motion.div
+                key={member.name}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="flex flex-col items-center text-center"
+              >
+                <div className="relative mb-4">
+                  <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden bg-background-alt relative">
+                    <TeamMemberImage
+                      src={member.image}
+                      alt={member.name}
+                      initials={member.initials}
+                    />
+                  </div>
+                  {member.linkedin && (
+                    <a
+                      href={member.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${member.name}'s LinkedIn profile`}
+                      className="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow-md"
+                    >
+                      <LinkedInIcon />
+                    </a>
+                  )}
+                </div>
+                <h3 className="font-heading font-semibold text-sm md:text-base">{member.name}</h3>
+                <p className="text-xs md:text-sm text-text/60 mt-1">{member.title}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -422,52 +478,6 @@ export default function CompanyPage() {
                 >protection</motion.span>. Capabilities that were once available only to large enterprises are now within reach—securely, responsibly, and by design.
               </motion.p>
             </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Leadership Section */}
-      <section className="py-20 px-6 md:px-12 bg-background overflow-hidden">
-        <div className="max-w-[var(--container-max-width)] mx-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-3xl md:text-4xl font-heading font-bold mb-12 text-center"
-          >
-            Leadership
-          </motion.h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
-            {leadershipTeam.map((member, index) => (
-              <motion.div
-                key={member.name}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="flex flex-col items-center text-center"
-              >
-                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden bg-background-alt mb-4 relative">
-                  <TeamMemberImage
-                    src={member.image}
-                    alt={member.name}
-                    initials={member.initials}
-                  />
-                </div>
-                <h3 className="font-heading font-semibold text-sm md:text-base mb-2">{member.name}</h3>
-                {member.linkedin && (
-                  <a
-                    href={member.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`${member.name}'s LinkedIn profile`}
-                  >
-                    <LinkedInIcon />
-                  </a>
-                )}
-              </motion.div>
-            ))}
           </div>
         </div>
       </section>
