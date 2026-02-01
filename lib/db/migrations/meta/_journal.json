@@ -15,6 +15,13 @@
       "when": 1769353600535,
       "tag": "0001_old_energizer",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1769964149926,
+      "tag": "0002_safe_wolverine",
+      "breakpoints": true
     }
   ]
 }

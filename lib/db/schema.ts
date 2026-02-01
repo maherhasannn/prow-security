@@ -8,6 +8,10 @@ export const aiSessionStatusEnum = pgEnum('ai_session_status', ['active', 'compl
 export const aiMessageRoleEnum = pgEnum('ai_message_role', ['user', 'assistant', 'system'])
 export const workspaceModeEnum = pgEnum('workspace_mode', ['secure', 'internet-enabled'])
 export const workspaceNoteTypeEnum = pgEnum('workspace_note_type', ['ai-generated', 'user-added'])
+export const workProductTypeEnum = pgEnum('work_product_type', [
+  'article', 'brief', 'memo', 'executive-summary',
+  'messaging-framework', 'decision-explanation'
+])
 
 // Organizations table
 export const organizations = pgTable('organizations', {
@@ -121,6 +125,7 @@ export const aiMessages = pgTable('ai_messages', {
 export const workspaceNotes = pgTable('workspace_notes', {
   id: uuid('id').defaultRandom().primaryKey(),
   workspaceId: uuid('workspace_id').notNull().references(() => workspaces.id, { onDelete: 'cascade' }),
+  title: text('title'),
   content: text('content').notNull(),
   type: workspaceNoteTypeEnum('type').notNull(),
   metadata: jsonb('metadata'),
@@ -128,6 +133,23 @@ export const workspaceNotes = pgTable('workspace_notes', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   workspaceIdIdx: index('workspace_notes_workspace_id_idx').on(table.workspaceId),
+}))
+
+// Work products table
+export const workProducts = pgTable('work_products', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  workspaceId: uuid('workspace_id').notNull().references(() => workspaces.id, { onDelete: 'cascade' }),
+  noteId: uuid('note_id').references(() => workspaceNotes.id, { onDelete: 'set null' }),
+  title: text('title').notNull(),
+  type: workProductTypeEnum('type').notNull(),
+  content: text('content').notNull(),
+  metadata: jsonb('metadata'),
+  createdBy: uuid('created_by').notNull().references(() => users.id),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  workspaceIdIdx: index('work_products_workspace_id_idx').on(table.workspaceId),
+  noteIdIdx: index('work_products_note_id_idx').on(table.noteId),
 }))
 
 // Audit logs table
@@ -203,6 +225,7 @@ export const workspacesRelations = relations(workspaces, ({ one, many }) => ({
   documents: many(documents),
   aiSessions: many(aiSessions),
   notes: many(workspaceNotes),
+  workProducts: many(workProducts),
   quickbooksConnections: many(quickbooksConnections),
 }))
 
@@ -248,10 +271,26 @@ export const aiMessagesRelations = relations(aiMessages, ({ one }) => ({
   }),
 }))
 
-export const workspaceNotesRelations = relations(workspaceNotes, ({ one }) => ({
+export const workspaceNotesRelations = relations(workspaceNotes, ({ one, many }) => ({
   workspace: one(workspaces, {
     fields: [workspaceNotes.workspaceId],
     references: [workspaces.id],
+  }),
+  workProducts: many(workProducts),
+}))
+
+export const workProductsRelations = relations(workProducts, ({ one }) => ({
+  workspace: one(workspaces, {
+    fields: [workProducts.workspaceId],
+    references: [workspaces.id],
+  }),
+  note: one(workspaceNotes, {
+    fields: [workProducts.noteId],
+    references: [workspaceNotes.id],
+  }),
+  creator: one(users, {
+    fields: [workProducts.createdBy],
+    references: [users.id],
   }),
 }))
 

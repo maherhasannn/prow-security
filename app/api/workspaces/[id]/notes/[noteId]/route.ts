@@ -41,6 +41,7 @@ export async function PATCH(
       .update(workspaceNotes)
       .set({
         content: validated.content,
+        title: validated.title,
         updatedAt: new Date(),
       })
       .where(
@@ -51,6 +52,7 @@ export async function PATCH(
       )
       .returning({
         id: workspaceNotes.id,
+        title: workspaceNotes.title,
         content: workspaceNotes.content,
         type: workspaceNotes.type,
         createdAt: workspaceNotes.createdAt,

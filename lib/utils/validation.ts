@@ -27,10 +27,40 @@ export const updateWorkspaceSchema = z.object({
 // Workspace notes schemas
 export const createWorkspaceNoteSchema = z.object({
   content: z.string().min(1).max(5000),
+  title: z.string().max(200).optional(),
 })
 
 export const updateWorkspaceNoteSchema = z.object({
   content: z.string().min(1).max(5000),
+  title: z.string().max(200).optional(),
+})
+
+// Work products schemas
+export const workProductTypes = [
+  'article', 'brief', 'memo', 'executive-summary',
+  'messaging-framework', 'decision-explanation'
+] as const
+
+export type WorkProductType = (typeof workProductTypes)[number]
+
+export const generateWorkProductSchema = z.object({
+  noteId: z.string().uuid(),
+  type: z.enum(workProductTypes),
+  additionalContext: z.string().max(2000).optional(),
+})
+
+export const createWorkProductSchema = z.object({
+  noteId: z.string().uuid().optional(),
+  title: z.string().min(1).max(500),
+  type: z.enum(workProductTypes),
+  content: z.string().min(1).max(50000),
+  metadata: z.record(z.unknown()).optional(),
+})
+
+export const updateWorkProductSchema = z.object({
+  title: z.string().min(1).max(500).optional(),
+  content: z.string().min(1).max(50000).optional(),
+  metadata: z.record(z.unknown()).optional(),
 })
 
 // Document schemas

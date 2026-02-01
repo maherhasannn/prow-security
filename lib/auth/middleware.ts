@@ -36,6 +36,14 @@ export async function getUserOrganizationId(): Promise<string> {
 }
 
 /**
+ * Gets the current user's ID
+ */
+export async function getUserId(): Promise<string> {
+  const session = await requireAuth()
+  return session.user.id
+}
+
+/**
  * Verifies the user has access to the specified organization
  */
 export async function requireOrganizationAccess(organizationId: string): Promise<UserRole> {

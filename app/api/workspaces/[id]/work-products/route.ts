@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth/config'
 import { db } from '@/lib/db'
-import { workspaces, workspaceNotes } from '@/lib/db/schema'
-import { and, eq } from 'drizzle-orm'
-import { getUserOrganizationId } from '@/lib/auth/middleware'
-import { createWorkspaceNoteSchema } from '@/lib/utils/validation'
+import { workspaces, workProducts, users } from '@/lib/db/schema'
+import { and, eq, desc } from 'drizzle-orm'
+import { getUserOrganizationId, getUserId } from '@/lib/auth/middleware'
+import { createWorkProductSchema } from '@/lib/utils/validation'
 
 export async function GET(
   request: Request,
@@ -34,22 +34,26 @@ export async function GET(
       return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })
     }
 
-    const notes = await db
+    const products = await db
       .select({
-        id: workspaceNotes.id,
-        title: workspaceNotes.title,
-        content: workspaceNotes.content,
-        type: workspaceNotes.type,
-        createdAt: workspaceNotes.createdAt,
-        updatedAt: workspaceNotes.updatedAt,
+        id: workProducts.id,
+        title: workProducts.title,
+        type: workProducts.type,
+        content: workProducts.content,
+        noteId: workProducts.noteId,
+        metadata: workProducts.metadata,
+        createdAt: workProducts.createdAt,
+        updatedAt: workProducts.updatedAt,
+        createdByName: users.name,
       })
-      .from(workspaceNotes)
-      .where(eq(workspaceNotes.workspaceId, params.id))
-      .orderBy(workspaceNotes.createdAt)
+      .from(workProducts)
+      .leftJoin(users, eq(workProducts.createdBy, users.id))
+      .where(eq(workProducts.workspaceId, params.id))
+      .orderBy(desc(workProducts.createdAt))
 
-    return NextResponse.json({ notes })
+    return NextResponse.json({ workProducts: products })
   } catch (error) {
-    console.error('Error fetching notes:', error)
+    console.error('Error fetching work products:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -69,6 +73,7 @@ export async function POST(
     }
 
     const organizationId = await getUserOrganizationId()
+    const userId = await getUserId()
 
     const [workspace] = await db
       .select()
@@ -86,28 +91,33 @@ export async function POST(
     }
 
     const body = await request.json()
-    const validated = createWorkspaceNoteSchema.parse(body)
+    const validated = createWorkProductSchema.parse(body)
 
-    const [note] = await db
-      .insert(workspaceNotes)
+    const [product] = await db
+      .insert(workProducts)
       .values({
         workspaceId: params.id,
+        noteId: validated.noteId || null,
         title: validated.title,
+        type: validated.type,
         content: validated.content,
-        type: 'user-added' as const,
+        metadata: validated.metadata || null,
+        createdBy: userId,
       })
       .returning({
-        id: workspaceNotes.id,
-        title: workspaceNotes.title,
-        content: workspaceNotes.content,
-        type: workspaceNotes.type,
-        createdAt: workspaceNotes.createdAt,
-        updatedAt: workspaceNotes.updatedAt,
+        id: workProducts.id,
+        title: workProducts.title,
+        type: workProducts.type,
+        content: workProducts.content,
+        noteId: workProducts.noteId,
+        metadata: workProducts.metadata,
+        createdAt: workProducts.createdAt,
+        updatedAt: workProducts.updatedAt,
       })
 
-    return NextResponse.json({ note }, { status: 201 })
+    return NextResponse.json({ workProduct: product }, { status: 201 })
   } catch (error) {
-    console.error('Error creating note:', error)
+    console.error('Error creating work product:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
