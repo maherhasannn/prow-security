@@ -43,14 +43,14 @@ const TeamMemberImage = ({ src, alt, initials }: { src: string; alt: string; ini
 
 const leadershipTeam = [
   {
-    name: 'Steven',
+    name: 'Sir Steven Saxton',
     title: 'Founder / CEO',
     initials: 'SS',
     image: '/images/team/steven.jpg',
     linkedin: 'https://www.linkedin.com/in/sir-steven-saxton-ba849b35/',
   },
   {
-    name: 'Katherine',
+    name: 'Katherine Saxton',
     title: 'Founder / Chief Experience & AI Officer',
     initials: 'K',
     image: '/images/team/katherine.jpg',
