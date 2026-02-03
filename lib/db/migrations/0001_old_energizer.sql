@@ -1,5 +1,5 @@
 DO $$ BEGIN
- CREATE TYPE "public"."workspace_mode" AS ENUM('secure', 'internet-enabled');
+CREATE TYPE "public"."workspace_mode" AS ENUM('secure', 'core');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

@@ -6,7 +6,7 @@ export const organizationMemberRoleEnum = pgEnum('organization_member_role', ['o
 export const documentTypeEnum = pgEnum('document_type', ['excel', 'csv', 'pdf', 'quickbooks'])
 export const aiSessionStatusEnum = pgEnum('ai_session_status', ['active', 'completed', 'archived'])
 export const aiMessageRoleEnum = pgEnum('ai_message_role', ['user', 'assistant', 'system'])
-export const workspaceModeEnum = pgEnum('workspace_mode', ['secure', 'internet-enabled'])
+export const workspaceModeEnum = pgEnum('workspace_mode', ['secure', 'core'])
 export const workspaceNoteTypeEnum = pgEnum('workspace_note_type', ['ai-generated', 'user-added'])
 export const workProductTypeEnum = pgEnum('work_product_type', [
   'article', 'brief', 'memo', 'executive-summary',

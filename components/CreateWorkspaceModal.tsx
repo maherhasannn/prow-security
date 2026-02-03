@@ -46,7 +46,7 @@ export default function CreateWorkspaceModal({
 }: CreateWorkspaceModalProps) {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
-  const [mode, setMode] = useState<'secure' | 'internet-enabled'>('secure')
+  const [mode, setMode] = useState<'secure' | 'core'>('secure')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
@@ -165,9 +165,7 @@ export default function CreateWorkspaceModal({
                     </motion.div>
                     <div>
                       <h2 className="text-2xl font-heading font-bold">
-                        {mode === 'secure'
-                          ? 'Create Secure Workspace'
-                          : 'Create Internet-Enabled Workspace'}
+                        {mode === 'secure' ? 'Create Secure Workspace' : 'Create Core Workspace'}
                       </h2>
                       <p className="text-sm text-text/60 mt-1">
                         {mode === 'secure'
@@ -189,7 +187,7 @@ export default function CreateWorkspaceModal({
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-accent/5 border border-accent/20 rounded-sm w-fit">
                   <Shield className="w-4 h-4 text-accent" />
                   <span className="text-xs font-heading font-semibold text-accent uppercase tracking-wider">
-                    {mode === 'secure' ? 'Secure by Default' : 'Internet-Enabled Mode'}
+                    {mode === 'secure' ? 'Secure by Default' : 'Core Mode'}
                   </span>
                 </div>
               </div>
@@ -346,9 +344,9 @@ export default function CreateWorkspaceModal({
                           </button>
                           <button
                             type="button"
-                            onClick={() => setMode('internet-enabled')}
+                            onClick={() => setMode('core')}
                             className={`p-4 border rounded-sm text-left transition-all ${
-                              mode === 'internet-enabled'
+                              mode === 'core'
                                 ? 'border-amber-400/50 bg-amber-50/60 shadow-sm'
                                 : 'border-text/10 bg-background-alt hover:border-text/20'
                             }`}
@@ -356,7 +354,7 @@ export default function CreateWorkspaceModal({
                             <div className="flex items-start gap-3">
                               <Eye className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
                               <div>
-                                <div className="text-sm font-semibold text-text">Internet-Enabled</div>
+                                <div className="text-sm font-semibold text-text">Core</div>
                                 <div className="text-xs text-text/60 mt-1">
                                   Uses Google Search grounding for live web context.
                                 </div>
@@ -369,16 +367,16 @@ export default function CreateWorkspaceModal({
                         </p>
                       </div>
 
-                      {mode === 'internet-enabled' && (
+                      {mode === 'core' && (
                         <div className="p-4 bg-amber-50/70 border border-amber-200 rounded-sm">
                           <div className="flex items-start gap-3">
                             <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
                             <div className="flex-1">
                               <div className="text-sm font-medium text-amber-900 mb-1">
-                                Internet Access Disclaimer
+                                Core Mode Disclaimer
                               </div>
                               <p className="text-xs text-amber-800 leading-relaxed">
-                                This mode enables Google Search grounding so the AI can read the internet.
+                                Core mode enables Google Search grounding so the AI can read the internet.
                                 It may increase exposure risk. Use only for non-sensitive workflows.
                               </p>
                             </div>
@@ -434,7 +432,7 @@ export default function CreateWorkspaceModal({
                         ) : (
                           <>
                             <Lock className="w-4 h-4" />
-                            {mode === 'secure' ? 'Create Secure Workspace' : 'Create Internet Workspace'}
+                            {mode === 'secure' ? 'Create Secure Workspace' : 'Create Core Workspace'}
                           </>
                         )}
                       </motion.button>

@@ -12,7 +12,7 @@ interface Workspace {
   id: string
   name: string
   description: string | null
-  mode: 'secure' | 'internet-enabled'
+  mode: 'secure' | 'core'
   createdAt: Date
 }
 
@@ -151,14 +151,12 @@ export default function Dashboard() {
                   </h3>
                   <span
                     className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded-sm border ${
-                      workspace.mode === 'internet-enabled'
+                      workspace.mode === 'core'
                         ? 'bg-amber-50/70 border-amber-200 text-amber-700'
                         : 'bg-background border-text/10 text-text/60'
                     }`}
                   >
-                    {workspace.mode === 'internet-enabled'
-                      ? 'Internet'
-                      : 'Secure'}
+                    {workspace.mode === 'core' ? 'Core' : 'Secure'}
                   </span>
                 </div>
                 {workspace.description && (

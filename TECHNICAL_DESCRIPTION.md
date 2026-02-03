@@ -2,7 +2,7 @@
 
 ## One-Sentence Technical Description
 
-Prow is a secure AI workspace platform that enables enterprise teams to analyze sensitive documents (PDFs, Excel, CSV) and chat with their data using encrypted, organization-isolated workspaces with dual-mode AI support (secure offline via Ollama Cloud or internet-enabled via OpenAI with web search).
+Prow is a secure AI workspace platform that enables enterprise teams to analyze sensitive documents (PDFs, Excel, CSV) and chat with their data using encrypted, organization-isolated workspaces with dual-mode AI support (secure offline via Ollama Cloud or Core via OpenAI with web search).
 
 ---
 
@@ -238,7 +238,7 @@ Prow is a secure AI workspace platform that enables enterprise teams to analyze 
 - Role-based access control
 - Full audit logging
 - Secure AI chat with document context
-- Dual-mode AI (secure vs internet-enabled)
+- Dual-mode AI (Secure vs Core)
 - Document analysis (PDF, Excel, CSV)
 - Streaming responses
 - Policy-aware guardrails

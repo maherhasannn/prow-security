@@ -57,11 +57,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })
     }
 
-    const isInternetEnabled = workspace.mode === 'internet-enabled'
-    console.log(`[AI Chat] Workspace mode: ${workspace.mode}, isInternetEnabled: ${isInternetEnabled}`)
+    const isCoreMode = workspace.mode === 'core'
+    console.log(`[AI Chat] Workspace mode: ${workspace.mode}, isCoreMode: ${isCoreMode}`)
 
-    const provider = isInternetEnabled ? new OpenAIProvider() : new OllamaProvider()
-    const defaultModel = isInternetEnabled ? 'gpt-4o' : 'gpt-oss:120b-cloud'
+    const provider = isCoreMode ? new OpenAIProvider() : new OllamaProvider()
+    const defaultModel = isCoreMode ? 'gpt-4o' : 'gpt-oss:120b-cloud'
 
     // Validate model against provider - use default if client sends wrong model for the mode
     const validOpenAIModels = ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo']
@@ -69,16 +69,16 @@ export async function POST(request: Request) {
 
     let resolvedModel = defaultModel
     if (model) {
-      if (isInternetEnabled && validOpenAIModels.includes(model)) {
+      if (isCoreMode && validOpenAIModels.includes(model)) {
         resolvedModel = model
-      } else if (!isInternetEnabled && validOllamaModels.includes(model)) {
+      } else if (!isCoreMode && validOllamaModels.includes(model)) {
         resolvedModel = model
       } else {
-        console.log(`[AI Chat] Client requested invalid model "${model}" for ${isInternetEnabled ? 'OpenAI' : 'Ollama'}, using default: ${defaultModel}`)
+        console.log(`[AI Chat] Client requested invalid model "${model}" for ${isCoreMode ? 'OpenAI' : 'Ollama'}, using default: ${defaultModel}`)
       }
     }
 
-    console.log(`[AI Chat] Using provider: ${isInternetEnabled ? 'OpenAI' : 'Ollama'}, model: ${resolvedModel}`)
+    console.log(`[AI Chat] Using provider: ${isCoreMode ? 'OpenAI' : 'Ollama'}, model: ${resolvedModel}`)
 
     const persistNotes = async (content: string) => {
       try {
@@ -116,7 +116,7 @@ export async function POST(request: Request) {
                 messages,
                 model: resolvedModel,
                 stream: true,
-                enableGrounding: isInternetEnabled,
+                enableGrounding: isCoreMode,
               },
               (chunk: string) => {
                 // Send chunk as JSON
@@ -167,7 +167,7 @@ export async function POST(request: Request) {
     const response = await provider.chat({
       messages,
       model: resolvedModel,
-      enableGrounding: isInternetEnabled,
+      enableGrounding: isCoreMode,
     })
 
     console.log(`[AI Chat] Response received, content length: ${response.content.length}`)
@@ -194,7 +194,7 @@ export async function POST(request: Request) {
 
     if (errorMessage.includes('SERPER_API_KEY')) {
       return NextResponse.json(
-        { error: 'Web search API key not configured. Please configure SERPER_API_KEY environment variable for internet-enabled workspaces.' },
+        { error: 'Web search API key not configured. Please configure SERPER_API_KEY environment variable for Core workspaces.' },
         { status: 500 }
       )
     }

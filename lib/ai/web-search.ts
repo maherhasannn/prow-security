@@ -1,5 +1,5 @@
 /**
- * Web search utility for AI providers with internet-enabled mode
+ * Web search utility for AI providers with Core mode
  * Uses Serper API for Google Search results
  */
 

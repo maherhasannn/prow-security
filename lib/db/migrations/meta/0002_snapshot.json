@@ -1357,7 +1357,7 @@
       "schema": "public",
       "values": [
         "secure",
-        "internet-enabled"
+        "core"
       ]
     },
     "public.workspace_note_type": {
