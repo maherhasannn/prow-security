@@ -85,12 +85,12 @@ export default function ProductPage() {
           </div>
           <div className="grid md:grid-cols-2 gap-8">
             <div className="bg-background-alt p-8 rounded-sm border border-text/10">
-              <h3 className="text-2xl font-heading font-semibold mb-2">Prow Secure™</h3>
+              <h3 className="text-2xl font-heading font-semibold mb-2">Prow Core™</h3>
               <p className="text-accent text-sm font-medium mb-6">Best-in-class AI with enterprise controls</p>
               <ul className="space-y-3 mb-6">
                 <li className="flex items-start gap-3">
                   <span className="text-accent mt-1">✓</span>
-                  <span className="text-text/80">Best-in-class AI models</span>
+                  <span className="text-text/80">Best-in-class AI models-Internet enabled.</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-accent mt-1">✓</span>
@@ -106,7 +106,7 @@ export default function ProductPage() {
               </p>
             </div>
             <div className="bg-background-alt p-8 rounded-sm border border-text/10">
-              <h3 className="text-2xl font-heading font-semibold mb-2">Prow Core™</h3>
+              <h3 className="text-2xl font-heading font-semibold mb-2">Prow Secure™</h3>
               <p className="text-accent text-sm font-medium mb-6">Fully private AI. Absolute isolation.</p>
               <ul className="space-y-3 mb-6">
                 <li className="flex items-start gap-3">
