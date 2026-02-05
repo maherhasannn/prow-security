@@ -1,6 +1,6 @@
 import { auth } from './config'
 import { db } from '@/lib/db'
-import { organizationMembers } from '@/lib/db/schema'
+import { organizationMembers, users } from '@/lib/db/schema'
 import { eq, and } from 'drizzle-orm'
 import { AuthenticationError, AuthorizationError, NotFoundError } from '@/lib/utils/errors'
 
@@ -112,7 +112,7 @@ export async function requireRole(
 export async function getUserRole(organizationId: string): Promise<UserRole | null> {
   try {
     const session = await requireAuth()
-    
+
     if (session.user.organizationId === organizationId) {
       return session.user.role || null
     }
@@ -132,6 +132,25 @@ export async function getUserRole(organizationId: string): Promise<UserRole | nu
   } catch {
     return null
   }
+}
+
+/**
+ * Requires the user to be a system admin
+ */
+export async function requireAdmin() {
+  const session = await requireAuth()
+
+  const [user] = await db
+    .select({ isAdmin: users.isAdmin })
+    .from(users)
+    .where(eq(users.id, session.user.id))
+    .limit(1)
+
+  if (!user?.isAdmin) {
+    throw new AuthorizationError('Admin access required')
+  }
+
+  return session
 }
 
 

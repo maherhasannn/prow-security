@@ -2,7 +2,7 @@ import NextAuth, { type DefaultSession } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import { db } from '@/lib/db'
 import { users, organizationMembers } from '@/lib/db/schema'
-import { eq } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 import bcrypt from 'bcryptjs'
 
 declare module 'next-auth' {
@@ -58,6 +58,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!isValid) {
           return null
         }
+
+        // Update login tracking
+        await db
+          .update(users)
+          .set({
+            loginCount: sql`${users.loginCount} + 1`,
+            lastLoginAt: new Date(),
+          })
+          .where(eq(users.id, user.id))
 
         // Get user's primary organization and role
         const [membership] = await db

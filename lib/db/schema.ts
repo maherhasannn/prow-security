@@ -39,6 +39,10 @@ export const users = pgTable('users', {
   email: text('email').notNull().unique(),
   name: text('name').notNull(),
   passwordHash: text('password_hash'),
+  isAdmin: boolean('is_admin').default(false).notNull(),
+  loginCount: integer('login_count').default(0).notNull(),
+  lastLoginAt: timestamp('last_login_at'),
+  tokensUsed: integer('tokens_used').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
