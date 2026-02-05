@@ -22,6 +22,20 @@
       "when": 1769964149926,
       "tag": "0002_safe_wolverine",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1770135914712,
+      "tag": "0003_redundant_colossus",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1770267068362,
+      "tag": "0004_nice_blue_shield",
+      "breakpoints": true
     }
   ]
 }

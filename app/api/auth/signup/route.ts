@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs'
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { name, email, password } = body
+    const { name, email, password, orgName, roleTitle, companySize } = body
 
     // Validation
     if (!name || !email || !password) {
@@ -71,8 +71,9 @@ export async function POST(request: Request) {
     const [organization] = await db
       .insert(organizations)
       .values({
-        name: `${name.trim()}'s Organization`,
+        name: orgName?.trim() || `${name.trim()}'s Organization`,
         slug: orgSlug,
+        ...(companySize && { companySize }),
       })
       .returning()
 
@@ -81,6 +82,7 @@ export async function POST(request: Request) {
       organizationId: organization.id,
       userId: user.id,
       role: 'owner',
+      ...(roleTitle?.trim() && { roleTitle: roleTitle.trim() }),
     })
 
     return NextResponse.json(

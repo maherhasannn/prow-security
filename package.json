@@ -11,7 +11,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:migrate:prod": "tsx scripts/migrate-production.ts",
     "db:studio": "drizzle-kit studio",
-    "create-test-user": "tsx scripts/create-test-user.ts"
+    "create-test-user": "tsx scripts/create-test-user.ts",
+    "seed-plans": "tsx scripts/seed-plans.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.0",
@@ -33,6 +34,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^10.1.0",
+    "uuid": "^10.0.0",
     "xlsx": "^0.18.5",
     "zod": "^3.23.0"
   },
@@ -42,6 +44,7 @@
     "@types/pdf-parse": "^1.1.4",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/uuid": "^10.0.0",
     "autoprefixer": "^10.0.1",
     "dotenv": "^16.6.1",
     "drizzle-kit": "^0.24.0",

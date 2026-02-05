@@ -37,6 +37,24 @@ export class NotFoundError extends AppError {
   }
 }
 
+export class PaymentError extends AppError {
+  constructor(
+    message: string,
+    public elavonCode?: string,
+    public declineCode?: string
+  ) {
+    super(message, 402, 'PAYMENT_ERROR')
+    this.name = 'PaymentError'
+  }
+}
+
+export class ServiceUnavailableError extends AppError {
+  constructor(message: string = 'Service temporarily unavailable') {
+    super(message, 503, 'SERVICE_UNAVAILABLE')
+    this.name = 'ServiceUnavailableError'
+  }
+}
+
 export function handleError(error: unknown): { message: string; statusCode: number; code?: string } {
   if (error instanceof AppError) {
     return {
