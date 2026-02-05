@@ -16,6 +16,11 @@ export const workProductTypeEnum = pgEnum('work_product_type', [
 // Company size enum
 export const companySizeEnum = pgEnum('company_size', ['1', '2-10', '10-100', '100+'])
 
+// User status and role enums
+export const userStatusEnum = pgEnum('user_status', ['active', 'suspended', 'pending'])
+export const userRoleEnum = pgEnum('user_role', ['user', 'power_user', 'admin'])
+export const flagSeverityEnum = pgEnum('flag_severity', ['low', 'medium', 'high', 'critical'])
+
 // Billing enums
 export const subscriptionPlanTypeEnum = pgEnum('subscription_plan_type', ['free', 'starter', 'professional', 'enterprise'])
 export const subscriptionStatusEnum = pgEnum('subscription_status', ['active', 'canceled', 'past_due', 'trialing', 'paused'])
@@ -40,9 +45,13 @@ export const users = pgTable('users', {
   name: text('name').notNull(),
   passwordHash: text('password_hash'),
   isAdmin: boolean('is_admin').default(false).notNull(),
+  status: userStatusEnum('status').default('active').notNull(),
+  role: userRoleEnum('role').default('user').notNull(),
   loginCount: integer('login_count').default(0).notNull(),
   lastLoginAt: timestamp('last_login_at'),
+  lastLoginIp: text('last_login_ip'),
   tokensUsed: integer('tokens_used').default(0).notNull(),
+  maxTokensLimit: integer('max_tokens_limit'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
@@ -314,6 +323,60 @@ export const paymentEvents = pgTable('payment_events', {
   eventTypeIdx: index('payment_events_event_type_idx').on(table.eventType),
 }))
 
+// App settings table (global configuration)
+export const appSettings = pgTable('app_settings', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  key: text('key').notNull().unique(),
+  value: text('value'),
+  description: text('description'),
+  updatedBy: uuid('updated_by').references(() => users.id),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+})
+
+// IP whitelist table (for admin dashboard access)
+export const ipWhitelist = pgTable('ip_whitelist', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  ipAddress: text('ip_address').notNull(),
+  description: text('description'),
+  isActive: boolean('is_active').default(true).notNull(),
+  createdBy: uuid('created_by').references(() => users.id),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  ipIdx: index('ip_whitelist_ip_idx').on(table.ipAddress),
+}))
+
+// User flags table (suspicious activity tracking)
+export const userFlags = pgTable('user_flags', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  flagType: text('flag_type').notNull(), // 'multiple_ips', 'token_spike', 'failed_logins', etc.
+  severity: flagSeverityEnum('severity').notNull(),
+  description: text('description'),
+  metadata: jsonb('metadata'),
+  isResolved: boolean('is_resolved').default(false).notNull(),
+  resolvedBy: uuid('resolved_by').references(() => users.id),
+  resolvedAt: timestamp('resolved_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: index('user_flags_user_id_idx').on(table.userId),
+  severityIdx: index('user_flags_severity_idx').on(table.severity),
+  unresolvedIdx: index('user_flags_unresolved_idx').on(table.isResolved),
+}))
+
+// Login history table (for heatmap and IP tracking)
+export const loginHistory = pgTable('login_history', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  ipAddress: text('ip_address'),
+  userAgent: text('user_agent'),
+  success: boolean('success').default(true).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: index('login_history_user_id_idx').on(table.userId),
+  createdAtIdx: index('login_history_created_at_idx').on(table.createdAt),
+}))
+
 // Relations
 export const organizationsRelations = relations(organizations, ({ one, many }) => ({
   members: many(organizationMembers),
@@ -334,6 +397,26 @@ export const usersRelations = relations(users, ({ many }) => ({
   createdDocuments: many(documents),
   aiSessions: many(aiSessions),
   auditLogs: many(auditLogs),
+  flags: many(userFlags),
+  loginHistory: many(loginHistory),
+}))
+
+export const userFlagsRelations = relations(userFlags, ({ one }) => ({
+  user: one(users, {
+    fields: [userFlags.userId],
+    references: [users.id],
+  }),
+  resolvedByUser: one(users, {
+    fields: [userFlags.resolvedBy],
+    references: [users.id],
+  }),
+}))
+
+export const loginHistoryRelations = relations(loginHistory, ({ one }) => ({
+  user: one(users, {
+    fields: [loginHistory.userId],
+    references: [users.id],
+  }),
 }))
 
 export const organizationMembersRelations = relations(organizationMembers, ({ one }) => ({
