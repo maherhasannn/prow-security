@@ -567,7 +567,7 @@ function parseElavonResponse(responseText: string): ElavonApiResponse {
     }
   })
 
-  return result as ElavonApiResponse
+  return result as unknown as ElavonApiResponse
 }
 
 /**

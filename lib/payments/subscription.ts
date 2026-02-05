@@ -5,7 +5,7 @@ import {
   billingCustomers,
   payments,
 } from '@/lib/db/schema'
-import { eq, and, desc } from 'drizzle-orm'
+import { eq, and, desc, sql } from 'drizzle-orm'
 import { NotFoundError, PaymentError } from '@/lib/utils/errors'
 import type { BillingInterval, Subscription, SubscriptionPlan } from './types'
 
@@ -406,7 +406,7 @@ export async function getPaymentHistory(
 
   // Get total count for pagination
   const [{ count }] = await db
-    .select({ count: db.$count(payments) })
+    .select({ count: sql<number>`count(*)::int` })
     .from(payments)
     .where(eq(payments.organizationId, organizationId))
 
