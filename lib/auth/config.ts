@@ -34,55 +34,84 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
+        const timestamp = new Date().toISOString()
+        console.log(`[SIGNIN ${timestamp}] Starting authorization`)
+
         if (!credentials?.email || !credentials?.password) {
+          console.log(`[SIGNIN ${timestamp}] Missing credentials`)
           return null
         }
 
-        // Find user by email (normalize to lowercase to match how emails are stored)
         const normalizedEmail = (credentials.email as string).toLowerCase().trim()
-        const [user] = await db
-          .select()
-          .from(users)
-          .where(eq(users.email, normalizedEmail))
-          .limit(1)
+        console.log(`[SIGNIN ${timestamp}] Looking up user: ${normalizedEmail.substring(0, 3)}***`)
 
-        if (!user || !user.passwordHash) {
-          return null
-        }
+        try {
+          // Find user by email (normalize to lowercase to match how emails are stored)
+          console.log(`[SIGNIN ${timestamp}] Step 1: Querying user from database...`)
+          const [user] = await db
+            .select()
+            .from(users)
+            .where(eq(users.email, normalizedEmail))
+            .limit(1)
+          console.log(`[SIGNIN ${timestamp}] Step 1 complete: User ${user ? 'found' : 'not found'}`)
 
-        // Verify password
-        const isValid = await bcrypt.compare(
-          credentials.password as string,
-          user.passwordHash
-        )
+          if (!user || !user.passwordHash) {
+            console.log(`[SIGNIN ${timestamp}] User not found or no password hash`)
+            return null
+          }
 
-        if (!isValid) {
-          return null
-        }
+          // Verify password
+          console.log(`[SIGNIN ${timestamp}] Step 2: Verifying password...`)
+          const isValid = await bcrypt.compare(
+            credentials.password as string,
+            user.passwordHash
+          )
+          console.log(`[SIGNIN ${timestamp}] Step 2 complete: Password ${isValid ? 'valid' : 'invalid'}`)
 
-        // Update login tracking
-        await db
-          .update(users)
-          .set({
-            loginCount: sql`${users.loginCount} + 1`,
-            lastLoginAt: new Date(),
+          if (!isValid) {
+            console.log(`[SIGNIN ${timestamp}] Invalid password`)
+            return null
+          }
+
+          // Update login tracking
+          console.log(`[SIGNIN ${timestamp}] Step 3: Updating login tracking...`)
+          await db
+            .update(users)
+            .set({
+              loginCount: sql`${users.loginCount} + 1`,
+              lastLoginAt: new Date(),
+            })
+            .where(eq(users.id, user.id))
+          console.log(`[SIGNIN ${timestamp}] Step 3 complete: Login tracked`)
+
+          // Get user's primary organization and role
+          console.log(`[SIGNIN ${timestamp}] Step 4: Getting organization membership...`)
+          const [membership] = await db
+            .select()
+            .from(organizationMembers)
+            .where(eq(organizationMembers.userId, user.id))
+            .orderBy(organizationMembers.createdAt)
+            .limit(1)
+          console.log(`[SIGNIN ${timestamp}] Step 4 complete: Membership ${membership ? 'found' : 'not found'}`)
+
+          console.log(`[SIGNIN ${timestamp}] SUCCESS: User authenticated`)
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            organizationId: membership?.organizationId,
+            role: membership?.role,
+          }
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+          const errorCode = (error as { code?: string })?.code
+          console.error(`[SIGNIN ${timestamp}] DATABASE ERROR:`, {
+            message: errorMessage,
+            code: errorCode,
+            name: error instanceof Error ? error.name : undefined,
           })
-          .where(eq(users.id, user.id))
-
-        // Get user's primary organization and role
-        const [membership] = await db
-          .select()
-          .from(organizationMembers)
-          .where(eq(organizationMembers.userId, user.id))
-          .orderBy(organizationMembers.createdAt)
-          .limit(1)
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          organizationId: membership?.organizationId,
-          role: membership?.role,
+          // Re-throw to let NextAuth handle it
+          throw error
         }
       },
     }),

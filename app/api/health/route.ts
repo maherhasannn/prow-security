@@ -25,6 +25,9 @@ export async function GET() {
     } catch (error) {
       tableChecks.users = false
       allTablesExist = false
+      // Expose error for debugging (remove in production if sensitive)
+      const err = error instanceof Error ? error.message : String(error)
+      ;(tableChecks as Record<string, unknown>).users_error = err
     }
 
     // Check if organizations table exists and is accessible
@@ -71,6 +74,37 @@ export async function GET() {
       tables: tableChecks,
     })
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    const errorCode = (error as { code?: string })?.code
+
+    // Detect specific error types for better debugging
+    let errorType = 'connection_failed'
+    let suggestion = 'Check database connection string'
+
+    if (errorMessage.includes('Tenant') || errorMessage.includes('tenant') || errorCode === 'XX000') {
+      errorType = 'tenant_not_found'
+      suggestion = 'Database may be paused (Supabase free tier) or deleted. Check your Supabase dashboard.'
+    } else if (errorMessage.includes('password') || errorMessage.includes('authentication')) {
+      errorType = 'auth_failed'
+      suggestion = 'Database credentials are incorrect. Check POSTGRES_URL in .env.local'
+    } else if (errorMessage.includes('ECONNREFUSED') || errorMessage.includes('connect')) {
+      errorType = 'connection_refused'
+      suggestion = 'Cannot reach database server. Check if the host is correct.'
+    } else if (errorMessage.includes('timeout') || errorMessage.includes('ETIMEDOUT')) {
+      errorType = 'timeout'
+      suggestion = 'Database connection timed out. Server may be overloaded or unreachable.'
+    } else if (errorMessage.includes('SSL') || errorMessage.includes('certificate')) {
+      errorType = 'ssl_error'
+      suggestion = 'SSL/TLS connection issue. Check sslmode in connection string.'
+    }
+
+    console.error('[HEALTH CHECK] Database connection failed:', {
+      errorType,
+      message: errorMessage,
+      code: errorCode,
+      suggestion,
+    })
+
     return NextResponse.json(
       {
         status: 'unhealthy',
@@ -79,7 +113,10 @@ export async function GET() {
           database: 'disconnected',
           migrations: 'unknown',
         },
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: errorMessage,
+        errorType,
+        errorCode,
+        suggestion,
       },
       { status: 503 }
     )
