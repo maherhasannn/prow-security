@@ -72,13 +72,25 @@ export const uploadDocumentSchema = z.object({
 // AI Session schemas
 export const createAISessionSchema = z.object({
   workspaceId: z.string().uuid(),
-  provider: z.enum(['openai', 'anthropic']),
+  provider: z.enum(['openai', 'anthropic', 'gemini', 'ollama']),
   model: z.string().min(1),
+  title: z.string().max(200).optional(),
+})
+
+export const updateAISessionSchema = z.object({
+  title: z.string().max(200).optional(),
+  status: z.enum(['active', 'completed', 'archived']).optional(),
 })
 
 export const sendAIMessageSchema = z.object({
   content: z.string().min(1).max(10000),
   documentIds: z.array(z.string().uuid()).optional(),
+})
+
+// Conversation creation schema (for workspace-specific route)
+export const createConversationSchema = z.object({
+  title: z.string().max(200).optional(),
+  model: z.string().min(1).optional(),
 })
 
 // Organization Member schemas

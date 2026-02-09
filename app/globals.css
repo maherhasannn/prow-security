@@ -3,24 +3,57 @@
 @tailwind utilities;
 
 :root {
-  /* Color Palette - Light & Airy */
-  --color-background: #EDF5F5;
-  --color-background-alt: #F2F4F6;
+  /* Color Palette - Refined with subtle warmth */
+  --color-background: #F0F4F4;
+  --color-background-alt: #F7F8F9;
+  --color-background-elevated: #FFFFFF;
+  --color-background-sunken: #E8ECEC;
+
+  /* Text Colors - Improved hierarchy */
   --color-text: #1A1F2C;
-  --color-text-muted: #5A6470;
-  --color-accent: #3A6A7B;
-  --color-accent-hover: #29ABE2;
-  
+  --color-text-secondary: #4A5568;
+  --color-text-muted: #718096;
+  --color-text-subtle: #A0AEC0;
+
+  /* Accent Colors - Richer palette */
+  --color-accent: #2D5A6A;
+  --color-accent-hover: #1E4A5A;
+  --color-accent-light: #E6F0F3;
+  --color-accent-muted: #7BA3B0;
+
+  /* Semantic Colors */
+  --color-success: #38A169;
+  --color-success-light: #E6F4EC;
+  --color-warning: #D69E2E;
+  --color-warning-light: #FDF6E3;
+  --color-error: #C53030;
+  --color-error-light: #FEE2E2;
+
+  /* Border Colors - Subtle separations */
+  --color-border: #E2E8F0;
+  --color-border-strong: #CBD5E0;
+  --color-border-subtle: #EDF2F7;
+
+  /* Shadow Colors */
+  --shadow-sm: 0 1px 2px 0 rgba(26, 31, 44, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(26, 31, 44, 0.06), 0 2px 4px -1px rgba(26, 31, 44, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(26, 31, 44, 0.08), 0 4px 6px -2px rgba(26, 31, 44, 0.04);
+
   /* Typography */
   --font-heading: 'Space Grotesk', -apple-system, sans-serif;
   --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
-  
+
   /* Spacing & Layout */
   --container-max-width: 1280px;
   --section-padding: 8rem;
-  
+
   /* Motion */
   --ease-custom: cubic-bezier(0.25, 1, 0.5, 1);
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
 }
 
 * {
@@ -53,6 +86,141 @@ h1, h2, h3, h4, h5, h6 {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* Component Styles for Visual Hierarchy */
+@layer components {
+  /* Card with subtle elevation */
+  .card {
+    background-color: var(--color-background-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .card:hover {
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Sunken panel for inset content */
+  .panel-sunken {
+    background-color: var(--color-background-sunken);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-md);
+  }
+
+  /* Elevated panel for floating content */
+  .panel-elevated {
+    background-color: var(--color-background-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Subtle divider line */
+  .divider {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--color-border) 10%,
+      var(--color-border) 90%,
+      transparent
+    );
+  }
+
+  /* Accent left border indicator */
+  .accent-bar {
+    position: relative;
+  }
+
+  .accent-bar::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background-color: var(--color-accent);
+    border-radius: 0 2px 2px 0;
+  }
+
+  /* Section header with subtle underline */
+  .section-header {
+    position: relative;
+    padding-bottom: 0.75rem;
+  }
+
+  .section-header::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 2rem;
+    height: 2px;
+    background-color: var(--color-accent);
+    border-radius: 1px;
+  }
+
+  /* Improved focus styles */
+  .focus-ring:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-accent-muted);
+  }
+
+  /* Subtle hover highlight */
+  .hover-highlight {
+    transition: background-color 0.15s ease;
+  }
+
+  .hover-highlight:hover {
+    background-color: var(--color-background-sunken);
+  }
+
+  /* Status indicator dot */
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--color-success);
+    box-shadow: 0 0 0 2px var(--color-success-light);
+  }
+
+  .status-dot-warning {
+    background-color: var(--color-warning);
+    box-shadow: 0 0 0 2px var(--color-warning-light);
+  }
+
+  .status-dot-error {
+    background-color: var(--color-error);
+    box-shadow: 0 0 0 2px var(--color-error-light);
+  }
+}
+
+/* Scrollbar Styling - Subtle and refined */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-strong);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-text-muted);
+}
+
+/* Selection styling */
+::selection {
+  background-color: var(--color-accent-light);
+  color: var(--color-text);
 }
 
 

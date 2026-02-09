@@ -1,16 +1,16 @@
 'use client'
 
-import { useSession, signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import Link from 'next/link'
-import { ArrowLeft, CreditCard, Receipt, Crown, Settings } from 'lucide-react'
+import { CreditCard, Receipt, Crown, Settings } from 'lucide-react'
 import BillingOverview from './BillingOverview'
 import PlanSelector from './PlanSelector'
 import PaymentHistoryTable from './PaymentHistoryTable'
 import PaymentMethodList from './PaymentMethodList'
 import HostedCheckoutModal from './HostedCheckoutModal'
+import PortalNavigation from '@/components/PortalNavigation'
 
 type Tab = 'overview' | 'plans' | 'history' | 'methods'
 
@@ -148,33 +148,18 @@ export default function BillingDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-text/10 bg-background-alt">
+      {/* Navigation Header */}
+      <PortalNavigation />
+
+      {/* Page Header */}
+      <div className="border-b border-text/10 bg-background-alt">
         <div className="max-w-[var(--container-max-width)] mx-auto px-6 md:px-12 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link
-                href="/app"
-                className="text-text/60 hover:text-text transition-colors"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </Link>
-              <div>
-                <h1 className="text-2xl font-heading font-bold">Billing</h1>
-                <p className="text-sm text-text/60">
-                  Manage your subscription and payment methods
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => signOut({ callbackUrl: '/' })}
-              className="px-4 py-2 text-sm text-text/70 hover:text-text border border-text/20 rounded-sm hover:border-text/40 transition-colors"
-            >
-              Sign Out
-            </button>
-          </div>
+          <h1 className="text-2xl font-heading font-bold">Billing</h1>
+          <p className="text-sm text-text/60">
+            Manage your subscription and payment methods
+          </p>
         </div>
-      </header>
+      </div>
 
       {/* Status Messages */}
       {(success || error || canceled) && (

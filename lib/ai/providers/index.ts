@@ -1,9 +1,10 @@
 import { OpenAIProvider } from './openai'
 import { AnthropicProvider } from './anthropic'
 import { GeminiProvider } from './gemini'
+import { OllamaProvider } from './ollama'
 import { type AIProvider } from './base'
 
-export type ProviderName = 'openai' | 'anthropic' | 'gemini'
+export type ProviderName = 'openai' | 'anthropic' | 'gemini' | 'ollama'
 
 const providers: Map<ProviderName, AIProvider> = new Map()
 
@@ -18,6 +19,10 @@ if (process.env.ANTHROPIC_API_KEY) {
 
 if (process.env.GEMINI_API_KEY) {
   providers.set('gemini', new GeminiProvider())
+}
+
+if (process.env.OLLAMA_API_KEY || process.env.OLLAMA_BASE_URL) {
+  providers.set('ollama', new OllamaProvider())
 }
 
 /**

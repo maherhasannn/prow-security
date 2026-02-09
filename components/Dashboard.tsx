@@ -1,11 +1,11 @@
 'use client'
 
-import { useSession, signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import Link from 'next/link'
 import CreateWorkspaceModal from './CreateWorkspaceModal'
+import PortalNavigation from './PortalNavigation'
 import { Plus } from 'lucide-react'
 
 interface Workspace {
@@ -63,33 +63,18 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-text/10 bg-background-alt">
-        <div className="max-w-[var(--container-max-width)] mx-auto px-6 md:px-12 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-heading font-bold">PROW</h1>
-              <p className="text-sm text-text/60">
-                Welcome back, {session.user.name}
-              </p>
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-text/60">
-                {session.user.organizationId ? `Org: ${session.user.organizationId.slice(0, 8)}...` : 'No organization'}
-              </span>
-              <button
-                onClick={() => signOut({ callbackUrl: '/' })}
-                className="px-4 py-2 text-sm text-text/70 hover:text-text border border-text/20 rounded-sm hover:border-text/40 transition-colors"
-              >
-                Sign Out
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Navigation Header */}
+      <PortalNavigation />
 
       {/* Main Content */}
       <main className="max-w-[var(--container-max-width)] mx-auto px-6 md:px-12 py-12">
+        {/* Welcome Section */}
+        <div className="mb-8">
+          <p className="text-text/60 text-sm mb-1">
+            Welcome back, {session.user.name}
+          </p>
+        </div>
+
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h2 className="text-3xl font-heading font-bold mb-2">Workspaces</h2>

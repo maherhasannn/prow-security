@@ -1,19 +1,23 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { ArrowLeft, Send, Lock, Info, Globe } from 'lucide-react'
+import { Send, Lock, Info, Globe, Save } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import DocumentSidebar from './DocumentSidebar'
 import NotesSidebar from './NotesSidebar'
+import LeftSidebar from './LeftSidebar'
 import SessionTimer from './SessionTimer'
+import PortalNavigation from './PortalNavigation'
+import { useNavigation } from '@/contexts/NavigationContext'
 
 interface Message {
   id: string
   role: 'user' | 'assistant'
   content: string
   timestamp: Date
+  saved?: boolean
 }
 
 interface SecureChatInterfaceProps {
@@ -29,19 +33,110 @@ export default function SecureChatInterface({
 }: SecureChatInterfaceProps) {
   const router = useRouter()
   const { data: session } = useSession()
+  const { setCurrentWorkspace } = useNavigation()
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [selectedDocuments, setSelectedDocuments] = useState<string[]>([])
   const [tokensPerSecond, setTokensPerSecond] = useState<number>(0)
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null)
+  const [conversationLoading, setConversationLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const totalTokensStreamedRef = useRef<number>(0)
   const streamStartTimeRef = useRef<number | null>(null)
   const tokenUpdateIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const pendingMessagesRef = useRef<Message[]>([])
+
+  // Set current workspace in navigation context
+  useEffect(() => {
+    setCurrentWorkspace({ id: workspaceId, name: workspaceName })
+    return () => setCurrentWorkspace(null)
+  }, [workspaceId, workspaceName, setCurrentWorkspace])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+
+  // Create a new conversation
+  const createConversation = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/workspaces/${workspaceId}/conversations`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
+      })
+      if (response.ok) {
+        const data = await response.json()
+        return data.conversation.id
+      }
+    } catch (error) {
+      console.error('Error creating conversation:', error)
+    }
+    return null
+  }, [workspaceId])
+
+  // Save messages to the conversation
+  const saveMessages = useCallback(async (conversationId: string, messagesToSave: Message[]) => {
+    try {
+      await fetch(`/api/workspaces/${workspaceId}/conversations/${conversationId}/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: messagesToSave.map(m => ({
+            role: m.role,
+            content: m.content,
+          })),
+        }),
+      })
+      // Mark messages as saved
+      setMessages(prev => prev.map(m =>
+        messagesToSave.find(ms => ms.id === m.id) ? { ...m, saved: true } : m
+      ))
+    } catch (error) {
+      console.error('Error saving messages:', error)
+    }
+  }, [workspaceId])
+
+  // Load messages for a conversation
+  const loadConversation = useCallback(async (conversationId: string) => {
+    setConversationLoading(true)
+    try {
+      const response = await fetch(`/api/workspaces/${workspaceId}/conversations/${conversationId}`)
+      if (response.ok) {
+        const data = await response.json()
+        const loadedMessages: Message[] = data.messages.map((m: { id: string; role: 'user' | 'assistant'; content: string; createdAt: string }) => ({
+          id: m.id,
+          role: m.role,
+          content: m.content,
+          timestamp: new Date(m.createdAt),
+          saved: true,
+        }))
+        setMessages(loadedMessages)
+        setActiveConversationId(conversationId)
+      }
+    } catch (error) {
+      console.error('Error loading conversation:', error)
+    } finally {
+      setConversationLoading(false)
+    }
+  }, [workspaceId])
+
+  // Handle selecting a conversation
+  const handleSelectConversation = useCallback((conversationId: string | null) => {
+    if (conversationId === null) {
+      // Start new conversation
+      setMessages([])
+      setActiveConversationId(null)
+    } else {
+      loadConversation(conversationId)
+    }
+  }, [loadConversation])
+
+  // Handle starting a new conversation
+  const handleNewConversation = useCallback(() => {
+    setMessages([])
+    setActiveConversationId(null)
+  }, [])
 
   // Normalize text formatting: clean up whitespace while preserving line breaks
   const normalizeText = (text: string): string => {
@@ -63,11 +158,21 @@ export default function SecureChatInterface({
       role: 'user',
       content: input.trim(),
       timestamp: new Date(),
+      saved: false,
     }
 
     setMessages((prev) => [...prev, userMessage])
     setInput('')
     setLoading(true)
+
+    // Create conversation if this is the first message
+    let conversationId = activeConversationId
+    if (!conversationId) {
+      conversationId = await createConversation()
+      if (conversationId) {
+        setActiveConversationId(conversationId)
+      }
+    }
 
     try {
       // Build context from selected documents
@@ -80,7 +185,7 @@ export default function SecureChatInterface({
 const systemPrompt = `You are PROW, a secure AI assistant for analyzing sensitive business data.
 You have access to documents uploaded by the user. Use this information to answer questions accurately and securely.
 Never expose sensitive information unnecessarily. Always cite which documents you are referencing.
-Keep responses professional, clear, and focused on business insights. Do not share information date cutoffs. 
+Keep responses professional, clear, and focused on business insights. Do not share information date cutoffs.
 ${workspaceMode === 'core'
   ? 'You can access the public internet using Google Search grounding. When you use web sources, cite the sources clearly.'
   : 'You do not have internet access. Do not claim to browse or search the web.'}
@@ -202,13 +307,30 @@ ${context}`
 
               if (data.done) {
                 // Streaming complete - normalize text formatting
-                setMessages((prev) =>
-                  prev.map((msg) =>
-                    msg.id === assistantMessageId
-                      ? { ...msg, content: normalizeText(msg.content) }
-                      : msg
-                  )
-                )
+                let finalAssistantContent = ''
+                setMessages((prev) => {
+                  const updated = prev.map((msg) => {
+                    if (msg.id === assistantMessageId) {
+                      finalAssistantContent = normalizeText(msg.content)
+                      return { ...msg, content: finalAssistantContent }
+                    }
+                    return msg
+                  })
+                  return updated
+                })
+
+                // Save messages to conversation
+                if (conversationId && finalAssistantContent) {
+                  const assistantMsg: Message = {
+                    id: assistantMessageId,
+                    role: 'assistant',
+                    content: finalAssistantContent,
+                    timestamp: new Date(),
+                    saved: false,
+                  }
+                  saveMessages(conversationId, [userMessage, assistantMsg])
+                }
+
                 // Clear token tracking
                 if (tokenUpdateIntervalRef.current) {
                   clearInterval(tokenUpdateIntervalRef.current)
@@ -278,13 +400,30 @@ ${context}`
 
         // Normalize text if done was found in buffer
         if (isDone) {
-          setMessages((prev) =>
-            prev.map((msg) =>
-              msg.id === assistantMessageId
-                ? { ...msg, content: normalizeText(msg.content) }
-                : msg
-            )
-          )
+          let finalAssistantContent = ''
+          setMessages((prev) => {
+            const updated = prev.map((msg) => {
+              if (msg.id === assistantMessageId) {
+                finalAssistantContent = normalizeText(msg.content)
+                return { ...msg, content: finalAssistantContent }
+              }
+              return msg
+            })
+            return updated
+          })
+
+          // Save messages to conversation
+          if (conversationId && finalAssistantContent) {
+            const assistantMsg: Message = {
+              id: assistantMessageId,
+              role: 'assistant',
+              content: finalAssistantContent,
+              timestamp: new Date(),
+              saved: false,
+            }
+            saveMessages(conversationId, [userMessage, assistantMsg])
+          }
+
           // Clear token tracking
           if (tokenUpdateIntervalRef.current) {
             clearInterval(tokenUpdateIntervalRef.current)
@@ -361,47 +500,36 @@ ${context}`
 
   return (
     <div className="h-screen flex flex-col bg-background">
-      {/* Security Banner */}
+      {/* Portal Navigation */}
+      <PortalNavigation />
+
+      {/* Workspace Info Bar */}
       <div className="border-b border-text/10 bg-background-alt flex-shrink-0">
-        <div className="px-6 py-2">
+        <div className="px-6 py-3">
           <div className="flex items-center justify-between gap-4 flex-wrap">
-            <div className="flex items-center gap-2 text-xs text-text/70">
-              <span className="text-base">🇺🇸</span>
-              <span className="font-medium">All traffic kept in United States</span>
+            <div className="flex items-center gap-4">
+              <div>
+                <h1 className="text-lg font-heading font-bold">{workspaceName}</h1>
+                <div className="flex items-center gap-3 text-xs text-text/60">
+                  <span>Secure AI Workspace</span>
+                  <span className="flex items-center gap-1">
+                    <span className="text-base">🇺🇸</span>
+                    <span>US traffic only</span>
+                  </span>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-4 text-xs">
+
+            <div className="flex items-center gap-3">
               {tokensPerSecond > 0 && (
-                <div className="flex items-center gap-1.5 text-text/70">
+                <div className="flex items-center gap-1.5 text-text/70 text-xs">
                   <span className="font-medium">~{tokensPerSecond} tokens/s</span>
                 </div>
               )}
-              <div className="flex items-center gap-1.5 text-text/60">
-                <Info className="w-3.5 h-3.5" />
-                <span>Chats auto-delete when navigating away</span>
+              <div className="hidden md:flex items-center gap-1.5 text-green-600 text-xs">
+                <Save className="w-3.5 h-3.5" />
+                <span>Conversations saved automatically</span>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Header */}
-      <header className="border-b border-text/10 bg-background-alt flex-shrink-0">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => router.push('/app')}
-                className="p-2 hover:bg-background rounded-sm transition-colors"
-              >
-                <ArrowLeft className="w-5 h-5 text-text/60" />
-              </button>
-              <div>
-                <h1 className="text-lg font-heading font-bold">{workspaceName}</h1>
-                <p className="text-xs text-text/60">Secure AI Workspace</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4">
               <SessionTimer />
               <div className="flex items-center gap-2 px-3 py-1.5 bg-accent/5 border border-accent/20 rounded-sm">
                 <Lock className="w-3.5 h-3.5 text-accent" />
@@ -426,20 +554,30 @@ ${context}`
             </div>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Notes Sidebar */}
-        <div className="w-80 flex-shrink-0">
-          <NotesSidebar workspaceId={workspaceId} />
-        </div>
+        {/* Left Sidebar */}
+        <LeftSidebar
+          workspaceId={workspaceId}
+          activeConversationId={activeConversationId}
+          onSelectConversation={handleSelectConversation}
+          onNewConversation={handleNewConversation}
+        />
 
         {/* Chat Area */}
         <div className="flex-1 flex flex-col">
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
-            {messages.length === 0 ? (
+            {conversationLoading ? (
+              <div className="h-full flex items-center justify-center">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent mx-auto mb-4"></div>
+                  <p className="text-text/60 text-sm">Loading conversation...</p>
+                </div>
+              </div>
+            ) : messages.length === 0 ? (
               <div className="h-full flex items-center justify-center">
                 <div className="text-center max-w-md">
                   <h2 className="text-xl font-heading font-semibold mb-2">
@@ -447,7 +585,7 @@ ${context}`
                   </h2>
                   <p className="text-text/70 text-sm mb-4">
                     Ask questions about your documents or get insights from your data.
-                    All conversations are encrypted and logged.
+                    All conversations are saved automatically.
                   </p>
                   <div className="flex items-center justify-center gap-2 text-xs text-text/60">
                     <Lock className="w-4 h-4" />
@@ -532,19 +670,24 @@ ${context}`
           </div>
         </div>
 
-        {/* Document Sidebar */}
-        <div className="w-64 flex-shrink-0">
-          <DocumentSidebar
-            workspaceId={workspaceId}
-            selectedDocuments={selectedDocuments}
-            onSelectDocument={(docId) => {
-              setSelectedDocuments((prev) =>
-                prev.includes(docId)
-                  ? prev.filter((id) => id !== docId)
-                  : [...prev, docId]
-              )
-            }}
-          />
+        {/* Right Sidebar - Documents & Notes */}
+        <div className="w-72 flex-shrink-0 flex flex-col border-l border-text/10">
+          <div className="flex-1 overflow-hidden">
+            <DocumentSidebar
+              workspaceId={workspaceId}
+              selectedDocuments={selectedDocuments}
+              onSelectDocument={(docId) => {
+                setSelectedDocuments((prev) =>
+                  prev.includes(docId)
+                    ? prev.filter((id) => id !== docId)
+                    : [...prev, docId]
+                )
+              }}
+            />
+          </div>
+          <div className="h-1/2 border-t border-text/10 overflow-hidden">
+            <NotesSidebar workspaceId={workspaceId} />
+          </div>
         </div>
       </div>
     </div>

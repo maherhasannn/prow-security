@@ -119,19 +119,22 @@ export const documentChunks = pgTable('document_chunks', {
   chunkIndexIdx: index('document_chunks_chunk_index_idx').on(table.documentId, table.chunkIndex),
 }))
 
-// AI sessions table
+// AI sessions table (conversations)
 export const aiSessions = pgTable('ai_sessions', {
   id: uuid('id').defaultRandom().primaryKey(),
   workspaceId: uuid('workspace_id').notNull().references(() => workspaces.id, { onDelete: 'cascade' }),
   userId: uuid('user_id').notNull().references(() => users.id),
-  provider: text('provider').notNull(), // 'openai', 'anthropic', etc.
+  title: text('title'), // Conversation title (auto-generated from first message or user-set)
+  provider: text('provider').notNull(), // 'openai', 'anthropic', 'ollama', etc.
   model: text('model').notNull(),
   status: aiSessionStatusEnum('status').default('active').notNull(),
+  messageCount: integer('message_count').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   workspaceIdIdx: index('ai_sessions_workspace_id_idx').on(table.workspaceId),
   userIdIdx: index('ai_sessions_user_id_idx').on(table.userId),
+  statusIdx: index('ai_sessions_status_idx').on(table.status),
 }))
 
 // AI messages table

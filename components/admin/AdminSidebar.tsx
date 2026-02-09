@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { LayoutDashboard, Users, BarChart3, Settings, ArrowLeft, Shield } from 'lucide-react'
+import { LayoutDashboard, Users, BarChart3, Settings, ArrowLeft, Shield, Home, Briefcase } from 'lucide-react'
 
 const navItems = [
   { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
@@ -19,11 +19,29 @@ export function AdminSidebar() {
   return (
     <aside className="w-64 bg-background-alt border-r border-text/10 min-h-screen flex flex-col">
       <div className="p-6 border-b border-text/10">
-        <Link href="/" className="flex items-center gap-2 text-text/60 hover:text-text transition-colors">
-          <ArrowLeft className="w-4 h-4" />
-          <span className="text-sm">Back to App</span>
+        {/* PROW Home Link */}
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-text hover:text-accent transition-colors group mb-4"
+        >
+          <div className="w-8 h-8 bg-text group-hover:bg-accent rounded-sm flex items-center justify-center transition-colors">
+            <Home className="w-4 h-4 text-background" />
+          </div>
+          <span className="text-xl font-heading font-bold">PROW</span>
         </Link>
-        <h1 className="text-xl font-heading font-bold text-text mt-4">Admin Dashboard</h1>
+
+        {/* Quick Navigation */}
+        <div className="flex items-center gap-2 mb-4">
+          <Link
+            href="/app"
+            className="flex items-center gap-1.5 text-xs text-text/60 hover:text-accent transition-colors"
+          >
+            <Briefcase className="w-3.5 h-3.5" />
+            <span>User Portal</span>
+          </Link>
+        </div>
+
+        <h1 className="text-lg font-heading font-semibold text-text">Admin Dashboard</h1>
       </div>
 
       <nav className="flex-1 p-4">
