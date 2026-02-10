@@ -62,6 +62,7 @@ export default function SecureChatInterface({
   // Create a new conversation
   const createConversation = useCallback(async () => {
     try {
+      console.log('[Chat] Creating conversation for workspace:', workspaceId)
       const response = await fetch(`/api/workspaces/${workspaceId}/conversations`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -69,10 +70,14 @@ export default function SecureChatInterface({
       })
       if (response.ok) {
         const data = await response.json()
+        console.log('[Chat] Conversation created:', data.conversation.id)
         return data.conversation.id
+      } else {
+        const errorData = await response.json().catch(() => ({}))
+        console.error('[Chat] Failed to create conversation:', response.status, errorData)
       }
     } catch (error) {
-      console.error('Error creating conversation:', error)
+      console.error('[Chat] Error creating conversation:', error)
     }
     return null
   }, [workspaceId])
@@ -80,6 +85,7 @@ export default function SecureChatInterface({
   // Save messages to the conversation
   const saveMessages = useCallback(async (conversationId: string, messagesToSave: Message[]) => {
     try {
+      console.log('[Chat] Saving messages to conversation:', conversationId, 'count:', messagesToSave.length)
       const response = await fetch(`/api/workspaces/${workspaceId}/conversations/${conversationId}/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -91,15 +97,19 @@ export default function SecureChatInterface({
         }),
       })
       if (response.ok) {
+        console.log('[Chat] Messages saved successfully')
         // Mark messages as saved
         setMessages(prev => prev.map(m =>
           messagesToSave.find(ms => ms.id === m.id) ? { ...m, saved: true } : m
         ))
         // Trigger sidebar refresh to show the updated conversation
         setSidebarRefreshTrigger(prev => prev + 1)
+      } else {
+        const errorData = await response.json().catch(() => ({}))
+        console.error('[Chat] Failed to save messages:', response.status, errorData)
       }
     } catch (error) {
-      console.error('Error saving messages:', error)
+      console.error('[Chat] Error saving messages:', error)
     }
   }, [workspaceId])
 

@@ -77,13 +77,18 @@ export default function LeftSidebar({
   const fetchConversations = useCallback(async () => {
     if (!workspaceId) return
     try {
+      console.log('[Sidebar] Fetching conversations for workspace:', workspaceId)
       const response = await fetch(`/api/workspaces/${workspaceId}/conversations`)
       if (response.ok) {
         const data = await response.json()
+        console.log('[Sidebar] Fetched conversations:', data.conversations?.length || 0)
         setConversations(data.conversations || [])
+      } else {
+        const errorData = await response.json().catch(() => ({}))
+        console.error('[Sidebar] Failed to fetch conversations:', response.status, errorData)
       }
     } catch (error) {
-      console.error('Error fetching conversations:', error)
+      console.error('[Sidebar] Error fetching conversations:', error)
     }
   }, [workspaceId])
 
@@ -138,6 +143,7 @@ export default function LeftSidebar({
   // Refresh conversations when refreshTrigger changes (after messages are saved)
   useEffect(() => {
     if (refreshTrigger && refreshTrigger > 0) {
+      console.log('[Sidebar] Refresh triggered:', refreshTrigger)
       fetchConversations()
     }
   }, [refreshTrigger, fetchConversations])
