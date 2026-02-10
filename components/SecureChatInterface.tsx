@@ -3,13 +3,13 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { Send, Lock, Info, Globe, Save, FileText } from 'lucide-react'
+import { Send, Lock, Globe, FileText, Home, ChevronRight } from 'lucide-react'
+import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
 import DocumentSidebar from './DocumentSidebar'
 import NotesOverlay from './NotesOverlay'
 import LeftSidebar from './LeftSidebar'
 import SessionTimer from './SessionTimer'
-import PortalNavigation from './PortalNavigation'
 import { useNavigation } from '@/contexts/NavigationContext'
 
 interface Message {
@@ -506,68 +506,70 @@ ${context}`
 
   return (
     <div className="h-screen flex flex-col bg-background">
-      {/* Portal Navigation */}
-      <PortalNavigation />
+      {/* Consolidated Top Bar */}
+      <header className="border-b border-text/10 bg-background-alt flex-shrink-0">
+        <div className="px-4 py-2.5">
+          <div className="flex items-center justify-between gap-4">
+            {/* Left: Logo + Workspace Name */}
+            <div className="flex items-center gap-3">
+              <Link
+                href="/app"
+                className="flex items-center gap-2 text-text hover:text-accent transition-colors group"
+                title="Back to Dashboard"
+              >
+                <div className="w-8 h-8 bg-accent group-hover:bg-accent-hover rounded-md flex items-center justify-center transition-colors">
+                  <Home className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-base font-heading font-bold tracking-tight hidden sm:inline">PROW</span>
+              </Link>
 
-      {/* Workspace Info Bar */}
-      <div className="border-b border-text/10 bg-background-alt flex-shrink-0">
-        <div className="px-6 py-3">
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <div className="flex items-center gap-4">
-              <div>
-                <h1 className="text-lg font-heading font-bold">{workspaceName}</h1>
-                <div className="flex items-center gap-3 text-xs text-text/60">
-                  <span>Secure AI Workspace</span>
-                  <span className="flex items-center gap-1">
-                    <span className="text-base">🇺🇸</span>
-                    <span>US traffic only</span>
-                  </span>
+              <ChevronRight className="w-4 h-4 text-text/30 hidden sm:block" />
+
+              <div className="flex items-center gap-2">
+                <h1 className="text-base font-heading font-semibold text-text">{workspaceName}</h1>
+                <div
+                  className={`flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-medium ${
+                    workspaceMode === 'core'
+                      ? 'bg-amber-100 text-amber-700'
+                      : 'bg-accent/10 text-accent'
+                  }`}
+                >
+                  {workspaceMode === 'core' ? (
+                    <Globe className="w-3 h-3" />
+                  ) : (
+                    <Lock className="w-3 h-3" />
+                  )}
+                  <span>{workspaceMode === 'core' ? 'Core' : 'Secure'}</span>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            {/* Right: Actions */}
+            <div className="flex items-center gap-2">
               {tokensPerSecond > 0 && (
-                <div className="flex items-center gap-1.5 text-text/70 text-xs">
-                  <span className="font-medium">~{tokensPerSecond} tokens/s</span>
+                <div className="hidden sm:flex items-center gap-1 text-text/60 text-xs px-2 py-1 bg-text/5 rounded">
+                  <span className="font-medium">~{tokensPerSecond} tok/s</span>
                 </div>
               )}
-              <div className="hidden md:flex items-center gap-1.5 text-green-600 text-xs">
-                <Save className="w-3.5 h-3.5" />
-                <span>Conversations saved automatically</span>
-              </div>
+
               <button
                 onClick={() => setNotesOverlayOpen(true)}
-                className="flex items-center gap-2 px-3 py-1.5 bg-accent/10 border border-accent/20 rounded-sm hover:bg-accent/20 transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-accent/10 border border-accent/20 rounded hover:bg-accent/20 transition-colors"
               >
-                <FileText className="w-3.5 h-3.5 text-accent" />
-                <span className="text-xs font-medium text-accent">Notes</span>
+                <FileText className="w-4 h-4 text-accent" />
+                <span className="text-xs font-medium text-accent hidden sm:inline">Notes</span>
               </button>
+
               <SessionTimer />
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-accent/5 border border-accent/20 rounded-sm">
-                <Lock className="w-3.5 h-3.5 text-accent" />
-                <span className="text-xs font-medium text-accent">Encrypted</span>
-              </div>
-              <div
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-sm border ${
-                  workspaceMode === 'core'
-                    ? 'bg-amber-50/70 border-amber-200 text-amber-700'
-                    : 'bg-background border-text/20 text-text/60'
-                }`}
-              >
-                {workspaceMode === 'core' ? (
-                  <Globe className="w-3.5 h-3.5" />
-                ) : (
-                  <Lock className="w-3.5 h-3.5" />
-                )}
-                <span className="text-xs font-medium">
-                  {workspaceMode === 'core' ? 'Core Mode' : 'Secure Lockdown'}
-                </span>
+
+              <div className="hidden md:flex items-center gap-1.5 px-2 py-1 bg-green-50 border border-green-200 rounded text-xs text-green-700">
+                <Lock className="w-3 h-3" />
+                <span className="font-medium">Encrypted</span>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
