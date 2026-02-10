@@ -322,18 +322,22 @@ ${context}`
               }
 
               if (data.done) {
+                console.log('[Chat] Stream done received, preparing to save')
                 // Streaming complete - normalize text formatting
                 let finalAssistantContent = ''
                 setMessages((prev) => {
                   const updated = prev.map((msg) => {
                     if (msg.id === assistantMessageId) {
                       finalAssistantContent = normalizeText(msg.content)
+                      console.log('[Chat] Found assistant message, content length:', finalAssistantContent.length)
                       return { ...msg, content: finalAssistantContent }
                     }
                     return msg
                   })
                   return updated
                 })
+
+                console.log('[Chat] After setMessages - conversationId:', conversationId, 'contentLength:', finalAssistantContent.length)
 
                 // Save messages to conversation
                 if (conversationId && finalAssistantContent) {
@@ -345,6 +349,8 @@ ${context}`
                     saved: false,
                   }
                   saveMessages(conversationId, [userMessage, assistantMsg])
+                } else {
+                  console.warn('[Chat] NOT saving - conversationId:', conversationId, 'contentEmpty:', !finalAssistantContent)
                 }
 
                 // Clear token tracking
@@ -416,17 +422,21 @@ ${context}`
 
         // Normalize text if done was found in buffer
         if (isDone) {
+          console.log('[Chat] Buffer done received, preparing to save')
           let finalAssistantContent = ''
           setMessages((prev) => {
             const updated = prev.map((msg) => {
               if (msg.id === assistantMessageId) {
                 finalAssistantContent = normalizeText(msg.content)
+                console.log('[Chat] Buffer - Found assistant message, content length:', finalAssistantContent.length)
                 return { ...msg, content: finalAssistantContent }
               }
               return msg
             })
             return updated
           })
+
+          console.log('[Chat] Buffer - After setMessages - conversationId:', conversationId, 'contentLength:', finalAssistantContent.length)
 
           // Save messages to conversation
           if (conversationId && finalAssistantContent) {
@@ -438,6 +448,8 @@ ${context}`
               saved: false,
             }
             saveMessages(conversationId, [userMessage, assistantMsg])
+          } else {
+            console.warn('[Chat] Buffer - NOT saving - conversationId:', conversationId, 'contentEmpty:', !finalAssistantContent)
           }
 
           // Clear token tracking
