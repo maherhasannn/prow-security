@@ -3,10 +3,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { Send, Lock, Info, Globe, Save } from 'lucide-react'
+import { Send, Lock, Info, Globe, Save, FileText } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import DocumentSidebar from './DocumentSidebar'
-import NotesSidebar from './NotesSidebar'
+import NotesOverlay from './NotesOverlay'
 import LeftSidebar from './LeftSidebar'
 import SessionTimer from './SessionTimer'
 import PortalNavigation from './PortalNavigation'
@@ -42,6 +42,7 @@ export default function SecureChatInterface({
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null)
   const [conversationLoading, setConversationLoading] = useState(false)
   const [sidebarRefreshTrigger, setSidebarRefreshTrigger] = useState(0)
+  const [notesOverlayOpen, setNotesOverlayOpen] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const totalTokensStreamedRef = useRef<number>(0)
   const streamStartTimeRef = useRef<number | null>(null)
@@ -535,6 +536,13 @@ ${context}`
                 <Save className="w-3.5 h-3.5" />
                 <span>Conversations saved automatically</span>
               </div>
+              <button
+                onClick={() => setNotesOverlayOpen(true)}
+                className="flex items-center gap-2 px-3 py-1.5 bg-accent/10 border border-accent/20 rounded-sm hover:bg-accent/20 transition-colors"
+              >
+                <FileText className="w-3.5 h-3.5 text-accent" />
+                <span className="text-xs font-medium text-accent">Notes</span>
+              </button>
               <SessionTimer />
               <div className="flex items-center gap-2 px-3 py-1.5 bg-accent/5 border border-accent/20 rounded-sm">
                 <Lock className="w-3.5 h-3.5 text-accent" />
@@ -676,7 +684,7 @@ ${context}`
           </div>
         </div>
 
-        {/* Right Sidebar - Documents & Notes */}
+        {/* Right Sidebar - Documents */}
         <div className="w-72 flex-shrink-0 flex flex-col border-l border-text/10">
           <div className="flex-1 overflow-hidden">
             <DocumentSidebar
@@ -691,11 +699,15 @@ ${context}`
               }}
             />
           </div>
-          <div className="h-1/2 border-t border-text/10 overflow-hidden">
-            <NotesSidebar workspaceId={workspaceId} />
-          </div>
         </div>
       </div>
+
+      {/* Notes Overlay */}
+      <NotesOverlay
+        isOpen={notesOverlayOpen}
+        onClose={() => setNotesOverlayOpen(false)}
+        workspaceId={workspaceId}
+      />
     </div>
   )
 }
