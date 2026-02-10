@@ -51,6 +51,7 @@ interface LeftSidebarProps {
   activeConversationId?: string | null
   onSelectConversation?: (conversationId: string | null) => void
   onNewConversation?: () => void
+  refreshTrigger?: number
 }
 
 export default function LeftSidebar({
@@ -58,6 +59,7 @@ export default function LeftSidebar({
   activeConversationId,
   onSelectConversation,
   onNewConversation,
+  refreshTrigger,
 }: LeftSidebarProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -132,6 +134,13 @@ export default function LeftSidebar({
       fetchConversations()
     }
   }, [activeConversationId, sidebarSection, fetchConversations])
+
+  // Refresh conversations when refreshTrigger changes (after messages are saved)
+  useEffect(() => {
+    if (refreshTrigger && refreshTrigger > 0) {
+      fetchConversations()
+    }
+  }, [refreshTrigger, fetchConversations])
 
   const handleDeleteConversation = async (conversationId: string) => {
     if (!workspaceId) return

@@ -41,6 +41,7 @@ export default function SecureChatInterface({
   const [tokensPerSecond, setTokensPerSecond] = useState<number>(0)
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null)
   const [conversationLoading, setConversationLoading] = useState(false)
+  const [sidebarRefreshTrigger, setSidebarRefreshTrigger] = useState(0)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const totalTokensStreamedRef = useRef<number>(0)
   const streamStartTimeRef = useRef<number | null>(null)
@@ -78,7 +79,7 @@ export default function SecureChatInterface({
   // Save messages to the conversation
   const saveMessages = useCallback(async (conversationId: string, messagesToSave: Message[]) => {
     try {
-      await fetch(`/api/workspaces/${workspaceId}/conversations/${conversationId}/messages`, {
+      const response = await fetch(`/api/workspaces/${workspaceId}/conversations/${conversationId}/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -88,10 +89,14 @@ export default function SecureChatInterface({
           })),
         }),
       })
-      // Mark messages as saved
-      setMessages(prev => prev.map(m =>
-        messagesToSave.find(ms => ms.id === m.id) ? { ...m, saved: true } : m
-      ))
+      if (response.ok) {
+        // Mark messages as saved
+        setMessages(prev => prev.map(m =>
+          messagesToSave.find(ms => ms.id === m.id) ? { ...m, saved: true } : m
+        ))
+        // Trigger sidebar refresh to show the updated conversation
+        setSidebarRefreshTrigger(prev => prev + 1)
+      }
     } catch (error) {
       console.error('Error saving messages:', error)
     }
@@ -564,6 +569,7 @@ ${context}`
           activeConversationId={activeConversationId}
           onSelectConversation={handleSelectConversation}
           onNewConversation={handleNewConversation}
+          refreshTrigger={sidebarRefreshTrigger}
         />
 
         {/* Chat Area */}
