@@ -48,6 +48,7 @@ export default function SecureChatInterface({
   const streamStartTimeRef = useRef<number | null>(null)
   const tokenUpdateIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const pendingMessagesRef = useRef<Message[]>([])
+  const streamingContentRef = useRef<string>('')
 
   // Set current workspace in navigation context
   useEffect(() => {
@@ -219,7 +220,8 @@ ${context}`
       // Add placeholder message immediately
       setMessages((prev) => [...prev, assistantMessage])
 
-      // Reset token tracking for new stream
+      // Reset streaming content and token tracking for new stream
+      streamingContentRef.current = ''
       totalTokensStreamedRef.current = 0
       streamStartTimeRef.current = Date.now()
       setTokensPerSecond(0)
@@ -302,6 +304,9 @@ ${context}`
                 const estimatedTokens = Math.ceil(chunkText.length / 4)
                 totalTokensStreamedRef.current += estimatedTokens
 
+                // Accumulate content in ref for saving later
+                streamingContentRef.current += chunkText
+
                 // Update tokens per second display
                 if (streamStartTimeRef.current) {
                   const elapsedSeconds = (Date.now() - streamStartTimeRef.current) / 1000
@@ -323,24 +328,22 @@ ${context}`
 
               if (data.done) {
                 console.log('[Chat] Stream done received, preparing to save')
-                // Streaming complete - normalize text formatting
-                let finalAssistantContent = ''
-                setMessages((prev) => {
-                  const updated = prev.map((msg) => {
-                    if (msg.id === assistantMessageId) {
-                      finalAssistantContent = normalizeText(msg.content)
-                      console.log('[Chat] Found assistant message, content length:', finalAssistantContent.length)
-                      return { ...msg, content: finalAssistantContent }
-                    }
-                    return msg
-                  })
-                  return updated
-                })
+                // Get final content from ref (synchronous, reliable)
+                const finalAssistantContent = normalizeText(streamingContentRef.current)
+                console.log('[Chat] Final content from ref, length:', finalAssistantContent.length)
 
-                console.log('[Chat] After setMessages - conversationId:', conversationId, 'contentLength:', finalAssistantContent.length)
+                // Update message state with normalized content
+                setMessages((prev) =>
+                  prev.map((msg) =>
+                    msg.id === assistantMessageId
+                      ? { ...msg, content: finalAssistantContent }
+                      : msg
+                  )
+                )
 
                 // Save messages to conversation
                 if (conversationId && finalAssistantContent) {
+                  console.log('[Chat] Saving messages to conversation:', conversationId)
                   const assistantMsg: Message = {
                     id: assistantMessageId,
                     role: 'assistant',
@@ -393,6 +396,9 @@ ${context}`
                 const estimatedTokens = Math.ceil(chunkText.length / 4)
                 totalTokensStreamedRef.current += estimatedTokens
 
+                // Accumulate content in ref for saving later
+                streamingContentRef.current += chunkText
+
                 // Update tokens per second display
                 if (streamStartTimeRef.current) {
                   const elapsedSeconds = (Date.now() - streamStartTimeRef.current) / 1000
@@ -423,23 +429,22 @@ ${context}`
         // Normalize text if done was found in buffer
         if (isDone) {
           console.log('[Chat] Buffer done received, preparing to save')
-          let finalAssistantContent = ''
-          setMessages((prev) => {
-            const updated = prev.map((msg) => {
-              if (msg.id === assistantMessageId) {
-                finalAssistantContent = normalizeText(msg.content)
-                console.log('[Chat] Buffer - Found assistant message, content length:', finalAssistantContent.length)
-                return { ...msg, content: finalAssistantContent }
-              }
-              return msg
-            })
-            return updated
-          })
+          // Get final content from ref (synchronous, reliable)
+          const finalAssistantContent = normalizeText(streamingContentRef.current)
+          console.log('[Chat] Buffer - Final content from ref, length:', finalAssistantContent.length)
 
-          console.log('[Chat] Buffer - After setMessages - conversationId:', conversationId, 'contentLength:', finalAssistantContent.length)
+          // Update message state with normalized content
+          setMessages((prev) =>
+            prev.map((msg) =>
+              msg.id === assistantMessageId
+                ? { ...msg, content: finalAssistantContent }
+                : msg
+            )
+          )
 
           // Save messages to conversation
           if (conversationId && finalAssistantContent) {
+            console.log('[Chat] Saving messages to conversation:', conversationId)
             const assistantMsg: Message = {
               id: assistantMessageId,
               role: 'assistant',
