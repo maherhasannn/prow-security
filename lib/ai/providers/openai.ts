@@ -65,7 +65,7 @@ export class OpenAIProvider implements AIProvider {
           throw new Error('Invalid OpenAI API key. Please check your OPENAI_API_KEY.')
         }
         if (error.status === 429) {
-          throw new Error('OpenAI rate limit exceeded. Please try again later.')
+          throw new Error('You\'ve reached your usage limit for this period. Upgrade your plan for higher limits or try again later.')
         }
         if (error.status === 500 || error.status === 503) {
           throw new Error('OpenAI service is temporarily unavailable. Please try again.')
@@ -197,7 +197,7 @@ export class OpenAIProvider implements AIProvider {
           throw new Error('Invalid OpenAI API key. Please check your OPENAI_API_KEY.')
         }
         if (error.status === 429) {
-          throw new Error('OpenAI rate limit exceeded. Please try again later.')
+          throw new Error('You\'ve reached your usage limit for this period. Upgrade your plan for higher limits or try again later.')
         }
         throw new Error(`OpenAI API error: ${error.message}`)
       }
@@ -268,7 +268,7 @@ export class OpenAIProvider implements AIProvider {
           throw new Error('Invalid OpenAI API key. Please check your OPENAI_API_KEY.')
         }
         if (error.status === 429) {
-          throw new Error('OpenAI rate limit exceeded. Please try again later.')
+          throw new Error('You\'ve reached your usage limit for this period. Upgrade your plan for higher limits or try again later.')
         }
         throw new Error(`OpenAI API error: ${error.message}`)
       }
@@ -423,7 +423,7 @@ export class OpenAIProvider implements AIProvider {
           throw new Error('Invalid OpenAI API key. Please check your OPENAI_API_KEY.')
         }
         if (error.status === 429) {
-          throw new Error('OpenAI rate limit exceeded. Please try again later.')
+          throw new Error('You\'ve reached your usage limit for this period. Upgrade your plan for higher limits or try again later.')
         }
         throw new Error(`OpenAI API error: ${error.message}`)
       }

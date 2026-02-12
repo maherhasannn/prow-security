@@ -234,7 +234,7 @@ export async function POST(request: Request) {
 
     if (errorMessage.includes('rate limit') || errorMessage.includes('429')) {
       return NextResponse.json(
-        { error: 'API rate limit exceeded. Please try again later.' },
+        { error: 'You\'ve reached your usage limit for this period. Upgrade your plan for higher limits or try again later.' },
         { status: 429 }
       )
     }
