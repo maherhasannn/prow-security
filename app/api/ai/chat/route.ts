@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth/config'
 import { db } from '@/lib/db'
-import { workspaces, workspaceNotes } from '@/lib/db/schema'
-import { and, eq } from 'drizzle-orm'
+import { workspaces, workspaceNotes, users } from '@/lib/db/schema'
+import { and, eq, sql } from 'drizzle-orm'
 import { getUserOrganizationId } from '@/lib/auth/middleware'
 import { OllamaProvider } from '@/lib/ai/providers/ollama'
 import { OpenAIProvider } from '@/lib/ai/providers/openai'
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
     console.log(`[AI Chat] Workspace mode: ${workspace.mode}, isCoreMode: ${isCoreMode}`)
 
     const provider = isCoreMode ? new OpenAIProvider() : new OllamaProvider()
-    const defaultModel = isCoreMode ? 'gpt-4o' : 'gpt-oss:120b-cloud'
+    const defaultModel = isCoreMode ? 'gpt-4' : 'gpt-oss:120b-cloud'
 
     // Validate model against provider - use default if client sends wrong model for the mode
     const validOpenAIModels = ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo']
@@ -101,6 +101,22 @@ export async function POST(request: Request) {
       }
     }
 
+    const updateTokenUsage = async (tokensUsed: number) => {
+      if (!tokensUsed || tokensUsed <= 0) return
+      try {
+        await db
+          .update(users)
+          .set({
+            tokensUsed: sql`${users.tokensUsed} + ${tokensUsed}`,
+            updatedAt: new Date(),
+          })
+          .where(eq(users.id, session.user.id))
+        console.log(`[AI Chat] Updated token usage for user ${session.user.id}: +${tokensUsed} tokens`)
+      } catch (tokenError) {
+        console.warn('Failed to update token usage:', tokenError)
+      }
+    }
+
     // Handle streaming response
     if (isStreaming) {
       console.log('[AI Chat] Starting streaming response')
@@ -128,6 +144,11 @@ export async function POST(request: Request) {
             console.log(`[AI Chat] Stream completed, content length: ${response.content.length}`)
 
             await persistNotes(response.content)
+
+            // Update token usage if available
+            if (response.usage?.totalTokens) {
+              await updateTokenUsage(response.usage.totalTokens)
+            }
 
             // Send final chunk with done: true
             const finalData = JSON.stringify({ chunk: '', done: true })
@@ -173,6 +194,11 @@ export async function POST(request: Request) {
     console.log(`[AI Chat] Response received, content length: ${response.content.length}`)
 
     await persistNotes(response.content)
+
+    // Update token usage if available
+    if (response.usage?.totalTokens) {
+      await updateTokenUsage(response.usage.totalTokens)
+    }
 
     return NextResponse.json({
       content: response.content,

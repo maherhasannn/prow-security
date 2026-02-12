@@ -34,7 +34,7 @@ export class OpenAIProvider implements AIProvider {
       }
 
       const response = await this.client.chat.completions.create({
-        model: options.model || 'gpt-4o',
+        model: options.model || 'gpt-4',
         messages,
         temperature: options.temperature ?? 0.7,
         max_tokens: options.maxTokens,
@@ -101,7 +101,7 @@ export class OpenAIProvider implements AIProvider {
         console.log(`[OpenAI] Web search iteration ${iterations}`)
 
         const response = await this.client.chat.completions.create({
-          model: options.model || 'gpt-4o',
+          model: options.model || 'gpt-4',
           messages: conversationMessages,
           temperature: options.temperature ?? 0.7,
           max_tokens: options.maxTokens,
@@ -173,7 +173,7 @@ export class OpenAIProvider implements AIProvider {
       console.log('[OpenAI] Max iterations reached, making final call without tools')
 
       const finalResponse = await this.client.chat.completions.create({
-        model: options.model || 'gpt-4o',
+        model: options.model || 'gpt-4',
         messages: conversationMessages,
         temperature: options.temperature ?? 0.7,
         max_tokens: options.maxTokens,
@@ -226,7 +226,7 @@ export class OpenAIProvider implements AIProvider {
       }
 
       const stream = await this.client.chat.completions.create({
-        model: options.model || 'gpt-4o',
+        model: options.model || 'gpt-4',
         messages,
         temperature: options.temperature ?? 0.7,
         max_tokens: options.maxTokens,
@@ -303,7 +303,7 @@ export class OpenAIProvider implements AIProvider {
         console.log(`[OpenAI Stream] Iteration ${iterations}`)
 
         const response = await this.client.chat.completions.create({
-          model: options.model || 'gpt-4o',
+          model: options.model || 'gpt-4',
           messages: conversationMessages,
           temperature: options.temperature ?? 0.7,
           max_tokens: options.maxTokens,
@@ -376,7 +376,7 @@ export class OpenAIProvider implements AIProvider {
       let fullContent = ''
 
       const stream = await this.client.chat.completions.create({
-        model: options.model || 'gpt-4o',
+        model: options.model || 'gpt-4',
         messages: conversationMessages,
         temperature: options.temperature ?? 0.7,
         max_tokens: options.maxTokens,
@@ -438,6 +438,7 @@ export class OpenAIProvider implements AIProvider {
 
   getModels(): string[] {
     return [
+      'gpt-4',
       'gpt-4o',
       'gpt-4o-mini',
       'gpt-4-turbo',

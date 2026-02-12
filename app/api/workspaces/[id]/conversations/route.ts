@@ -95,7 +95,7 @@ export async function POST(
 
     // Determine provider based on workspace mode
     const provider = workspace.mode === 'core' ? 'openai' : 'ollama'
-    const defaultModel = workspace.mode === 'core' ? 'gpt-4o' : 'gpt-oss:120b-cloud'
+    const defaultModel = workspace.mode === 'core' ? 'gpt-4' : 'gpt-oss:120b-cloud'
 
     // Create the conversation (AI session)
     const [conversation] = await db
